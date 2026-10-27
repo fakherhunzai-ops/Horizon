@@ -1,53 +1,2299 @@
-import React,{useState,useEffect,useRef} from 'react';
-import {createRoot} from 'react-dom/client';
-import {BrowserRouter,Routes,Route,Link,useLocation} from 'react-router-dom';
-import {ArrowRight,ChevronDown,ChevronRight,Menu,X,Phone,Workflow,Bot,PanelsTopLeft,Rocket,PenTool,MousePointer2,Map,CalendarCheck,Code2,Database,ShieldCheck,GitBranch,Search,Globe,MessageSquare,Check,ArrowUpRight,Layers,FileText,Lock,CheckCircle2} from 'lucide-react';
-import {groups,services,steps,cases,articles,faqs} from './data';
-import '@fontsource/inter/latin-400.css';
-import '@fontsource/inter/latin-500.css';
-import '@fontsource/inter/latin-600.css';
-import '@fontsource/inter/latin-700.css';
-import './style.css';
-const icons=[Workflow,Bot,PanelsTopLeft,Rocket,PenTool,MousePointer2,Map,CalendarCheck,Code2,Database,ShieldCheck,GitBranch,Search,Globe,MessageSquare];
-const Icon=({index=0,...props})=>{const I=icons[index%icons.length];return <I size={18} strokeWidth={1.5} {...props}/>};
-const A=({to='/book-a-call',children,secondary=false,className=''})=><Link className={`button ${secondary?'secondary':''} ${className}`} to={to}>{children||'Book a free 30-minute discovery call'}<ArrowRight size={15}/></Link>;
-const Label=({children})=><div className="eyebrow">{children}</div>;
-const Title=({children})=><h2>{children}</h2>;
-function Logo(){return <Link className="logo" to="/" aria-label="Horizon Consults home"><span className="logo-symbol">H</span><span>Horizon Consults<small>UK TECHNOLOGY & AI DELIVERY</small></span></Link>}
-function ServiceGroup({group}){return <div className="service-group"><Label>{group[0]}</Label>{group[1].map(s=><Link to={'/services/'+s[1]} className="menu-service" key={s[1]}><span className="icon-box"><Icon index={services.indexOf(s)}/></span><span><strong>{s[0]}</strong><small>{s[2]}</small></span></Link>)}</div>}
-function Header(){const [open,setOpen]=useState('');const [mobile,setMobile]=useState(false);const ref=useRef();const loc=useLocation();useEffect(()=>{setOpen('');setMobile(false);window.scrollTo(0,0);document.title='Horizon Consults — '+(loc.pathname==='/'?'Technology & AI Delivery':loc.pathname.split('/').pop().replaceAll('-',' '));},[loc]);useEffect(()=>{const close=e=>{if(!ref.current?.contains(e.target))setOpen('')};const key=e=>{if(e.key==='Escape'){setOpen('');setMobile(false)}};document.addEventListener('pointerdown',close);document.addEventListener('keydown',key);return()=>{document.removeEventListener('pointerdown',close);document.removeEventListener('keydown',key)}},[]);return <header ref={ref} className="header"><Logo/><button className="mobile-toggle" onClick={()=>setMobile(!mobile)} aria-label="Toggle navigation" aria-expanded={mobile}>{mobile?<X/>:<Menu/>}</button><nav className={mobile?'nav mobile-open':'nav'} aria-label="Main navigation"><div onMouseEnter={()=>!mobile&&setOpen('services')} className="nav-dropdown"><button aria-expanded={open==='services'} onClick={()=>setOpen(open==='services'?'':'services')}>Services <ChevronDown size={13}/></button>{open==='services'&&<div className="mega"><div className="mega-top">WHAT WE DO <span><i/> 15 SERVICES <em>4 PRACTICES</em></span></div><div className="mega-columns"><div><ServiceGroup group={groups[0]}/><ServiceGroup group={groups[1]}/></div><div><ServiceGroup group={groups[2]}/><ServiceGroup group={groups[3]}/></div></div><div className="mega-footer"><Link to="/contact">Not sure which fits? Start with the problem.</Link><span><Link to="/services">View all services</Link><Link to="/book-a-call">Book a call →</Link></span></div></div>}</div><Link to="/how-we-work">How We Work</Link><Link to="/case-studies">Case Studies</Link><Link to="/insights">Insights</Link><div className="nav-dropdown" onMouseEnter={()=>!mobile&&setOpen('company')}><button aria-expanded={open==='company'} onClick={()=>setOpen(open==='company'?'':'company')}>Company <ChevronDown size={13}/></button>{open==='company'&&<div className="company-menu">{[['About Horizon','/about'],['Delivery Model','/about#delivery'],['Capabilities','/capabilities'],['Who We Work With','/about#audience'],['Contact','/contact']].map(([t,p])=><Link to={p} key={p}>{t}<ArrowUpRight size={14}/></Link>)}</div>}</div><div className="nav-actions"><Link className="contact-pill" to="/contact"><Phone size={13}/>UK Contact</Link><A>Book a Call</A></div></nav></header>}
-function WorkflowVisual({dark=false,mode=0}){return <div className={`workflow-visual ${dark?'dark-visual':''}`}><div className="visual-bar"><span>0{mode+1} · {['WORKFLOW','INTELLIGENCE','OPERATIONS','NEW PRODUCT'][mode]}</span><span>Inbox · Sheets · CRM</span></div><div className="workflow-body"><div className="mini-document"><Label>{['ENQUIRY INBOX','KNOWLEDGE BASE','BUSINESS PLATFORM','PRODUCT RELEASE'][mode]}</Label><div className="skeleton long"/><div className="skeleton"/><div className="skeleton short"/></div><span className="connector">→</span><div className="workflow-stack"><div className="gradient-pill">{['Automation','AI agent','Connected system','First release'][mode]}</div>{['Sheets updated','CRM record synced','Report sent'].map((t,i)=><div className="mini-step" key={t}><i/>{mode===1?['Source checked','Draft prepared','Human reviewed'][i]:t}<Check size={10}/></div>)}</div></div><div className="visual-bottom"><span>NO RE-TYPING</span><span>HANDOVER REMOVED</span></div></div>}
-function Transformation(){return <div className="transformation"><div className="trans-column"><Label>◦ FRAGMENTED BUSINESS</Label>{['Customer enquiry','Spreadsheet process','CRM','Documents','Approvals','Legacy system'].map((t,i)=><div className="input-row" key={t}><FileText size={11}/><span>{t}</span><small>• {['retyped by hand','duplicate rows','not synced','scattered files','delayed approval','no integration'][i]}</small></div>)}<div className="single-truth"><CheckCircle2 size={16}/><span>Six sources, no single version of the truth.<br/>Somebody is holding it together by hand.</span></div></div><div className="horizon-engine"><Label>• Horizon</Label><div className="engine-icon">H</div>{['Automation','AI','Integration','Business logic'].map(t=><div key={t}>{t}<span>+</span></div>)}<div className="engine-lights"><i/><i/><i/></div></div><div className="connected"><Label>• CONNECTED BUSINESS <b>LIVE</b></Label><div className="connected-panel"><strong>Connected operations <span>Synced</span></strong><div className="output-grid">{['Automated workflow','AI-assisted review','Human approval'].map(t=><div key={t}>{t}<div className="skeleton"/></div>)}</div><div className="chart">{[30,40,36,52,48,65,72,80,73].map((h,i)=><i style={{height:h+'%'}} key={i}/>)}</div><div className="report-label">Live reporting <span>Centralised information</span></div><div className="aligned">● All systems aligned</div></div></div></div>}
-function Friction(){return <div className="friction"><div className="visual-bar"><span>FROM FRICTION TO FLOW</span><span>4 STEPS · START HERE</span></div><div className="friction-grid">{['Tell us what is getting in the way','Find the highest-value opportunity','Build with a named senior team','Launch something useful'].map((t,i)=><div key={t}><span className="step-icon"><Icon index={i}/></span><small>0{i+1}</small><strong>{t}</strong><p>{['One honest conversation','Workflow, system or product','Visible progress, reviewed work','Measured against the agreed goal'][i]}</p></div>)}</div><div className="friction-bottom">✧ Start with the problem, not the tool — <Link to="/how-we-work">see how we work</Link></div></div>}
-function Problem(){const [active,setActive]=useState(0);const rows=['Data is retyped by hand','Duplicate records and unclear ownership','Approvals wait on one person','Reporting arrives too late to act on'];return <section className="section"><Label>WHERE PROGRESS STALLS</Label><Title>Your business has moved on.<br/><em>Your tools have not.</em></Title><div className="two-col problem-grid"><div className="problem-list">{rows.map((t,i)=><button key={t} className={active===i?'active':''} onClick={()=>setActive(i)} aria-pressed={active===i}><small>0{i+1}</small><span><strong>{t}</strong>{active===i&&<p>{['The same information is entered into two or three systems because nothing talks to anything else. It is slow, it creates errors, and it means your reporting depends on someone remembering.','Different versions of the same record make it hard to know what is correct, current or owned.','Important decisions sit in inboxes instead of moving through a clear, accountable workflow.','By the time the numbers are assembled, the moment to do something useful has passed.'][i]}</p>}</span><ChevronRight size={15}/></button>)}</div><div className="legacy-visual"><div className="visual-bar"><strong>{['Customer enquiry · entered three times','Customer records · disconnected','Approval queue · waiting for review','Monthly report · out of date'][active]}</strong><span>MANUAL ENTRY</span></div><div className="table-row table-head"><span>RECORD</span><span>SYSTEM</span><span>STATUS</span><span/></div>{['Enquiry','Enquiry (copy)','Job record','Job sheet'].map((t,i)=><div className="table-row" key={t}><span>{t}</span><span>{['CRM','Spreadsheet','CRM','Shared drive'][i]}</span><span>{i===active?'Needs review':'Open'}</span><span className={i===active?'error-line':'skeleton'}/></div>)}<div className="warning">⚠ Same information keyed by hand into 3 systems today</div><div className="legacy-note"><Label>{rows[active]}</Label><p>A familiar process. An avoidable bottleneck.</p></div></div></div></section>}
-function CoreServices(){const [active,setActive]=useState(0);return <section className="section"><Label>CORE SERVICES</Label><Title>The right technology for<br/><em>the right problem.</em></Title><p className="intro">Four ways in. Every engagement is scoped and agreed before work begins — with a first deliverable you can plan around.</p><div className="two-col core-grid"><div>{services.slice(0,4).map((s,i)=><div className={`core-row ${active===i?'selected':''}`} key={s[1]}><button onClick={()=>setActive(i)} aria-pressed={active===i}><span className="number">0{i+1}</span><div><Label>{s[3]}</Label><h3>{s[0]}</h3><p>{s[2]}</p></div></button><Link aria-label={'Explore '+s[0]} to={'/services/'+s[1]}>Explore →</Link></div>)}</div><WorkflowVisual dark mode={active}/></div></section>}
-function Why(){return <section className="white-band"><div className="section two-col"><div><Label>WHY HORIZON CONSULTS</Label><Title>Good software<br/>starts with<br/><em>better judgement.</em></Title><p className="intro">A useful solution starts long before the first line of code. We ask better questions, make the trade-offs clear and build around the business.</p></div><div className="principles">{[['Business-first discovery','We look at where time, revenue or customer experience is leaking before we recommend a solution.'],['Senior people stay involved','The people shaping the work stay close to its delivery. No hand-off into a black box.'],['Commercial clarity','Clear scope, sensible decisions and a shared understanding of what success looks like.'],['Built to belong to you','Your systems, your information, your future. Documented and designed for handover.']].map(([t,p],i)=><div key={t}><small>0{i+1}</small><div><h3>{t}</h3><p>{p}</p></div></div>)}</div></div><div className="trust-strip wrap">{['Business-led discovery','Clear scope & ownership','Visible senior delivery','Responsible use of AI','Built for the long term'].map(t=><div key={t}><Check size={14}/>{t}</div>)}</div></section>}
-function Delivery(){return <section className="dark-band" id="delivery"><div className="wrap"><Label>THE HORIZON DELIVERY MODEL</Label><Title>UK accountability.<br/>Senior international<br/><em>engineering.</em></Title><p className="intro">One accountable delivery partner. A senior team built around the work.<br/>Product direction, planning and delivery coordination kept aligned from scope through release.</p><div className="delivery-system"><div><Label>UK ACCOUNTABILITY</Label>{['Business alignment & discovery','Scope & commercial clarity','Product & Project Management','Communication & governance'].map(t=><div className="delivery-item" key={t}><CheckCircle2 size={15}/>{t}</div>)}</div><div className="delivery-core"><div className="orbit"><span>H</span></div><strong>Horizon Delivery System</strong><small>One team. Shared standards.</small></div><div><Label>SENIOR DELIVERY TEAM</Label>{['Engineering','Design','Product','QA & technical leadership'].map(t=><div className="delivery-item" key={t}><Icon index={services.findIndex(s=>s[0].includes(t))<0?8:4}/>{t}</div>)}</div></div></div></section>}
-function CaseVisual({index=0}){return <div className={'case-visual cv-'+index}><div className="case-app"><div className="case-app-nav"><span className="tiny-brand">H</span><span>Workspace</span><span>Overview</span><span>Activity</span><span>•••</span></div><div className="case-app-main"><div className="case-app-heading">{['Workflow overview','Product analytics','Operations workspace','Knowledge centre'][index]}<span>↗</span></div>{index===1?<><div className="stat-cards">{['Engagement','Activity','Overview'].map(t=><div key={t}><small>{t}</small><div className="skeleton"/></div>)}</div><div className="bar-chart">{[22,33,29,52,45,64,56,73,69,86,80,97].map((h,i)=><i key={i} style={{height:h+'%'}}/>)}</div></>:<>{['Customer enquiry','Document review','Team approval','Ready to deliver'].map((t,i)=><div className="app-record" key={t}><span className="record-dot"/><span>{t}</span><span className="skeleton"/><small>{i%2?'In review':'Complete'}</small></div>)}<div className="app-summary"><span/><span/><span/></div></>}</div></div></div>}
-function CaseGrid({limit=4,items=cases}){return <div className="case-grid">{items.slice(0,limit).map((c)=><Link className="case-card" to={'/case-studies/'+c[1]} key={c[1]}><CaseVisual index={cases.indexOf(c)}/><div className="case-copy"><Label>{c[2]} · {c[3]}</Label><h3>{c[0]}<ArrowUpRight size={19}/></h3><p>{c[4]}</p><span className="text-link">Explore the delivery example →</span><small className="example-note">Illustrative delivery example · not a client claim</small></div></Link>)}</div>}
-function Work(){return <section className="section" id="work"><Label>SELECTED WORK & DELIVERY EXAMPLES</Label><Title>Proof over <em>promises.</em></Title><p className="intro">A closer look at how the right thinking becomes a working system.<br/>Illustrative examples of the problems we help businesses solve.</p><CaseGrid/></section>}
-function Governance(){return <section className="white-band"><div className="section"><Label>CONFIDENCE THROUGHOUT DELIVERY</Label><Title>Clear ownership. <em>Careful delivery.</em></Title><p className="intro">Know who is responsible, what is moving and how decisions get made.</p><div className="two-col"><div className="governance-visual"><div className="visual-bar">DELIVERY WITH CONFIDENCE <ShieldCheck size={15}/></div><div className="governance-path">{['Scope','Design','Build','Review','Release'].map((t,i)=><div key={t}><span>{i===0?<Check size={17}/>:<Icon index={i+4}/>}</span><small>{t}</small></div>)}</div><div className="governance-status"><span>● Named owners</span><span>● Clear checkpoints</span><span>● Shared visibility</span></div></div><div className="governance-copy">{[['Named accountability','Clear responsibilities, not a rotating cast.'],['A shared view of progress','Regular reviews and decisions made in the open.'],['Quality built in','Testing, review and release discipline throughout.'],['Responsible AI','Human judgement where the outcome matters.']].map(([t,p])=><div key={t}><h4>{t}</h4><p>{p}</p></div>)}</div></div></div></section>}
-function Process(){return <section className="section"><Label>HOW WE WORK</Label><Title>Five steps from open question<br/>to <em>working system.</em></Title><p className="intro">A clear path, without pretending every project is the same.</p><div className="timeline">{steps.map(([t,p],i)=><Link className={'timeline-card step-'+i} to={'/how-we-work#'+t.toLowerCase().replaceAll(' ','-')} key={t}><span className="timeline-number">0{i+1}</span><div><h3>{t}</h3><p>{p}</p><span className="text-link">Learn more →</span></div></Link>)}</div></section>}
-function Fractional(){return <section className="section fractional"><Label>FRACTIONAL LEADERSHIP</Label><div className="two-col"><div><Title>Sometimes you don’t need<br/>another development team.<br/>You need <em>the right person<br/>running the one you have.</em></Title>{[['Fractional Product Manager','product-management','Bring clarity to priorities, product decisions and the next useful release.'],['Fractional Project Manager','project-management','Keep scope, people and delivery moving in the same direction.']].map(([t,p,d],i)=><Link className="role-link" to={'/services/'+p} key={p}><Icon index={i+6}/><div><h3>{t}</h3><p>{d}</p></div><ArrowUpRight size={16}/></Link>)}</div><div className="leadership-visual"><Label>THE RIGHT LEADERSHIP. IN THE RIGHT PLACE.</Label><div className="leadership-tabs"><span>Direction</span><span>Priorities</span><span>Delivery</span></div>{['A clear product roadmap','Decisions with commercial context','A team that knows what matters','Progress everyone can see'].map(t=><div className="leadership-row" key={t}><CheckCircle2 size={15}/>{t}</div>)}</div></div></section>}
-const capabilityGroups=[['DESIGN',[['Product Design','product-design'],['UX Design','ux-ui-design'],['UI Design','ux-ui-design']]],['ENGINEERING',[['AI Agent','ai-agents'],['AI Automation','ai-automation'],['Frontend Development','frontend-development'],['Backend Development','backend-development'],['Forward Deploy Engineering','forward-deploy-engineering']]],['QUALITY',[['QA & Testing','qa-testing']]],['DELIVERY',[['Product Management','product-management'],['Project Management','project-management']]],['GROWTH',[['SEO','seo'],['GEO','geo'],['AEO','aeo']]]];
-function Capabilities(){return <section className="section capabilities"><Label>OUR CAPABILITIES</Label><Title>The skills needed to move from<br/><em>problem to working product.</em></Title><p className="intro">Specialist skills, brought together around your business.<br/>The right people for the work — not a fixed team looking for a problem.</p><div className="capability-center"><span className="logo-symbol">H</span> HORIZON</div><div className="capability-grid">{capabilityGroups.map(([t,items])=><div key={t}><Label>{t}</Label>{items.map(([n,s])=><Link key={n} to={'/services/'+s}>{n}<ArrowUpRight size={12}/></Link>)}</div>)}</div></section>}
-function Audience(){return <section className="section" id="audience"><Label>WHO WE WORK WITH</Label><Title>Built for businesses where<br/>technology needs to create<br/><em>real commercial value.</em></Title><div className="audience-list">{[['UK SMEs · £1m–£20m revenue','Reduce operational friction and build systems that support the next stage of growth.','ai-automation'],['Funded startups & scaleups','Shape the right product, build a focused release and grow with confidence.','mvp-development'],['Professional services','Connect your people, knowledge and client workflows.','custom-software']].map(([t,p,s])=><Link to={'/services/'+s} key={t}><Icon index={s.length}/><div><h3>{t}</h3><p>{p}</p></div><span>Explore how we help <ArrowRight size={14}/></span></Link>)}</div></section>}
-function FAQ({items=faqs}){return <div className="faq-list">{items.map(([q,a])=><details key={q}><summary>{q}<span>+</span></summary><p>{a}</p></details>)}</div>}
-function FAQSection(){return <section className="section two-col faq-section"><div><Label>A FEW USEFUL ANSWERS</Label><Title>Questions before<br/>we start.</Title><p className="intro">No jargon, no pressure. If your question isn’t here, let’s talk it through.</p><A>Book a free discovery call</A></div><FAQ/></section>}
-function CTA(){return <section className="final-cta"><Label>START WITH AN HONEST CONVERSATION</Label><h2>Have a problem<br/><em>worth solving?</em></h2><p>Tell us what is getting in the way.<br/>We’ll help you work out what is worth doing next.</p><div className="cta-buttons"><A/><A to="/contact" secondary>Tell us about your project</A></div><small>No hard sell. Just a useful first conversation.</small></section>}
-function Footer(){return <footer><div className="wrap footer-grid"><div><Logo/><p>UK technology and AI delivery.<br/>Find the problem worth solving.<br/>Then build it properly.</p><Link className="text-link" to="/contact">Get in touch →</Link></div>{[['Services',...services.slice(0,4).map(s=>[s[0],'/services/'+s[1]]),['All services','/services']],['Company',['About Horizon','/about'],['How We Work','/how-we-work'],['Capabilities','/capabilities'],['Contact','/contact']],['Resources',['Case Studies','/case-studies'],['Insights','/insights'],['Book a Call','/book-a-call']],['Legal',['Privacy','/privacy'],['Terms','/terms'],['Cookies','/cookies']]].map(([t,...links])=><div key={t}><h4>{t}</h4>{links.map(([n,p])=><Link key={p} to={p}>{n}</Link>)}</div>)}</div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} Horizon Consults. All rights reserved.</span><span>Business-first thinking. Carefully delivered technology.</span></div></footer>}
-function Home(){return <><section className="hero wrap"><div className="hero-copy"><Label>UK TECHNOLOGY & AI DELIVERY PARTNER</Label><h1>Find the problem<br/>worth solving.<br/>Then build<br/><em>it properly.</em></h1><p>Horizon Consults is a UK technology and AI delivery partner. We identify the highest-value opportunity in your business — an AI workflow, a custom system or a new product — and deliver it with UK accountability, a senior team and pricing that reflects real delivery economics.</p><A>Book a Free 30-Minute Discovery Call</A><A secondary to="/how-we-work">See How We Work</A></div><div className="hero-visual"><Transformation/><Friction/></div></section><Problem/><CoreServices/><Why/><Delivery/><Work/><Governance/><Process/><Fractional/><Capabilities/><Audience/><FAQSection/><CTA/></>}
-function PageHero({label,title,description,children}){return <section className="page-hero wrap"><Label>{label}</Label><h1>{title}</h1>{description&&<p>{description}</p>}{children}</section>}
-function ServicesPage(){return <><PageHero label="WHAT WE DO · 15 SERVICES · 4 PRACTICES" title={<>The right expertise.<br/><em>The right problem.</em></>} description="From the first question to a working system. Specialist services connected by one business-first delivery approach."><A/></PageHero><section className="section services-directory">{groups.map(g=><div key={g[0]}><Label>{g[0]}</Label><div className="directory-grid">{g[1].map(s=><Link className="directory-card" to={'/services/'+s[1]} key={s[1]}><span className="icon-box"><Icon index={services.indexOf(s)}/></span><h3>{s[0]}</h3><p>{s[2]}</p><span className="text-link">Explore service →</span></Link>)}</div></div>)}</section><Capabilities/><Process/><Work/><FAQSection/><CTA/></>}
-function ServicePage(){const slug=useLocation().pathname.split('/').pop();const s=services.find(s=>s[1]===slug);if(!s)return <NotFound/>;const i=services.indexOf(s);return <><PageHero label={'HORIZON SERVICES / '+groups.find(g=>g[1].includes(s))[0]} title={<>{s[0]}.<br/><em>Built around your business.</em></>} description={s[2]+' Start with the business outcome, then shape the right solution.'}><A/></PageHero><section className="section two-col"><div><Label>THE PROBLEM</Label><Title>Make progress.<br/><em>Not more complexity.</em></Title><p className="intro">{s[0]} should solve a real problem, not add another tool to manage. We help you understand what is getting in the way, agree what matters and build a solution that fits your team.</p><h3>Who it is for</h3><p>UK SMEs, funded startups and professional services teams with a clear ambition and a workflow, product or system that needs to work better.</p></div><WorkflowVisual dark mode={i%4}/></section><section className="section"><Label>WHAT HORIZON DELIVERS</Label><Title>Clear direction.<br/><em>Useful delivery.</em></Title><div className="directory-grid">{[['Discovery & priorities','A shared understanding of the problem, users and commercial goals.'],['Design & implementation',s[2]+' Decisions are reviewed with the people using the system.'],['Quality & handover','Tested work, clear documentation and an agreed plan for launch and ownership.']].map(([t,p],j)=><div className="directory-card" key={t}><Icon index={i+j}/><h3>{t}</h3><p>{p}</p></div>)}</div><h3 className="space-top">Key capabilities</h3><div className="tags">{['Business discovery','Workflow mapping',s[0],'System integration','Quality assurance','Documentation'].map(t=><span key={t}>{t}</span>)}</div></section><Process/><section className="section"><Label>RELEVANT DELIVERY EXAMPLES</Label><Title>From thinking to <em>working.</em></Title><CaseGrid limit={2}/></section><section className="section two-col"><div><Label>GOOD QUESTIONS</Label><Title>Before we begin.</Title></div><FAQ items={[[`How do we get started with ${s[0]}?`,'We start with a discovery conversation to understand the current situation, constraints and desired outcome. We then recommend a sensible next step.'],['Can you work with our current systems?','We review your tools, access requirements and integration options before proposing changes. The goal is to preserve what works and improve what does not.'],...faqs.slice(2,4)]}/></section><section className="section"><Label>CONNECTED EXPERTISE</Label><Title>Related services.</Title><div className="directory-grid">{[services[(i+1)%15],services[(i+2)%15],services[(i+3)%15]].map(r=><Link className="directory-card" key={r[1]} to={'/services/'+r[1]}><h3>{r[0]}</h3><p>{r[2]}</p><span className="text-link">Explore →</span></Link>)}</div></section><CTA/></>}
-function HowPage(){return <><PageHero label="HOW WE WORK" title={<>From open question<br/>to <em>working system.</em></>} description="Business-first discovery. Clear agreements. Visible delivery. A named senior team from the first conversation through release."><A/></PageHero><Process/><section className="section">{steps.map(([t,p],i)=><div id={t.toLowerCase().replaceAll(' ','-')} className="process-detail" key={t}><span className="timeline-number">0{i+1}</span><div><Label>{['DISCOVERY & PROBLEM FRAMING','SOLUTION SHAPING & DESIGN','SCOPE & PRODUCT / PROJECT MANAGEMENT','ENGINEERING & QA','LAUNCH & GOVERNANCE'][i]}</Label><h2>{t}</h2><p>{p} {['We speak with stakeholders, understand the current workflow and identify where a change could create real value.','We explore options, map user journeys and test the assumptions before committing to a build.','We agree deliverables, ownership, review points and commercial terms. Product and project management keep direction and coordination aligned.','Design and engineering work together in reviewable increments. Testing and technical review are part of the work, not a final phase.','We plan the release, document the system and agree handover, support and the next learning priorities.'][i]}</p></div></div>)}</section><Governance/><Delivery/><CTA/></>}
-function CasesPage(){const [industry,setIndustry]=useState('All industries');const [service,setService]=useState('All services');const filtered=cases.filter(c=>(industry==='All industries'||c[2]===industry)&&(service==='All services'||c[3]===service));return <><PageHero label="WORK & DELIVERY EXAMPLES" title={<>Proof over <em>promises.</em></>} description="Explore the thinking, systems and delivery approaches behind useful business technology. These are illustrative examples, not verified client case studies."/><section className="section"><Label>FEATURED WORK</Label><div className="filters"><label>Industry<select value={industry} onChange={e=>setIndustry(e.target.value)}>{['All industries',...new Set(cases.map(c=>c[2]))].map(t=><option key={t}>{t}</option>)}</select></label><label>Service<select value={service} onChange={e=>setService(e.target.value)}>{['All services',...new Set(cases.map(c=>c[3]))].map(t=><option key={t}>{t}</option>)}</select></label><span aria-live="polite">{filtered.length} examples</span></div>{filtered.length?<CaseGrid items={filtered}/>:<div className="empty-state"><h3>No examples in this combination.</h3><button className="button" onClick={()=>{setIndustry('All industries');setService('All services')}}>Reset filters</button></div>}</section><CTA/></>}
-function CaseDetail(){const c=cases.find(c=>c[1]===useLocation().pathname.split('/').pop());if(!c)return <NotFound/>;return <><PageHero label={'DELIVERY EXAMPLE / '+c[3]} title={c[0]} description={c[4]}/><div className="wrap"><div className="notice"><FileText size={18}/>Illustrative delivery example. This is not a verified client engagement; no client metrics or results are claimed.</div><CaseVisual index={cases.indexOf(c)}/></div><section className="section article-layout"><aside><Label>PROJECT OVERVIEW</Label><p>{c[2]}</p><p>{c[3]}</p><Link to="/contact" className="text-link">Discuss a similar problem →</Link></aside><article>{[['Business context','Growing teams often inherit a collection of tools that were useful individually but do not work well together. The opportunity is to build a more coherent way of working.'],['The problem','Information moves between inboxes, documents and separate systems. Manual handovers obscure ownership and make it harder to see the current state of work.'],['Our approach','Start by mapping the existing process with the people who use it. Identify avoidable friction, agree the highest-value change and define the smallest useful release.'],['The solution','A connected workflow with explicit ownership, human review points and a shared view of progress. Integrations are chosen based on the existing systems and access available.'],['System & workflow','Enquiry → structured intake → automated checks → human approval → delivery → reporting. Each transition has a clear owner and a visible status.'],['Delivery process','Discovery and solution shaping are followed by an agreed scope, iterative design and engineering, structured testing and a planned release.'],['Intended outcome','Less repetitive admin, clearer ownership and more useful operational visibility. Actual outcomes would need to be measured against an agreed baseline during a real engagement.']].map(([t,p])=><section key={t}><h2>{t}</h2><p>{p}</p></section>)}<h3>Technology & capabilities</h3><div className="tags"><span>{c[3]}</span><span>Workflow design</span><span>Integration</span><span>QA & Testing</span></div></article></section><section className="section"><Title>Related work.</Title><CaseGrid items={cases.filter(x=>x!==c)} limit={2}/></section><CTA/></>}
-function InsightsPage(){const [cat,setCat]=useState('All');return <><PageHero label="HORIZON INSIGHTS" title={<>Better questions.<br/><em>Better technology decisions.</em></>} description="Practical perspectives on AI, product and engineering — grounded in the work, not the hype."/><section className="section"><div className="filter-tabs">{['All',...articles.map(a=>a[2])].map(t=><button key={t} aria-pressed={cat===t} className={cat===t?'active':''} onClick={()=>setCat(t)}>{t}</button>)}</div><div className="insight-grid">{articles.filter(a=>cat==='All'||a[2]===cat).map((a,i)=><Link className="insight-card" to={'/insights/'+a[1]} key={a[1]}><div className="insight-art"><Icon index={articles.indexOf(a)} size={40}/><span>HORIZON / PERSPECTIVES</span></div><Label>{a[2]} · 4 MIN READ</Label><h3>{a[0]}</h3><span className="text-link">Read insight →</span></Link>)}</div></section><CTA/></>}
-function Article(){const a=articles.find(a=>a[1]===useLocation().pathname.split('/').pop());if(!a)return <NotFound/>;const sections=[['Start with the business outcome',`The most useful ${a[2].toLowerCase()} decisions start with a concrete business question. What is taking too long? Where does the customer experience break down? What cannot the team do reliably today? A clear answer gives the work a direction.`],['Understand the current workflow','Speak with the people doing the work. Follow the information between systems and identify where it is copied, delayed or checked. A workflow map is often more useful than a long list of features. It makes assumptions visible and gives everyone a shared reference.'],['Keep judgement where it matters','Automation is not the same as removing accountability. Define the decisions that need a person, the information they need to make those decisions and the point at which a system should stop and ask for help. Make exceptions part of the design.'],['Build the smallest useful change','Choose a bounded first release with an outcome you can observe. Agree what good looks like before building, review the work with real users and leave space to learn. A smaller, well-chosen change is easier to evaluate than a broad transformation with unclear goals.'],['Measure, learn and own the result','Establish a baseline, agree how you will review the outcome and document the operational owner. Technology becomes useful when it fits everyday work and the business knows how to run it.']];return <><PageHero label={a[2]+' / HORIZON INSIGHTS'} title={a[0]} description="A practical perspective on choosing useful work and delivering it with care."/><div className="wrap article-meta">27 October 2026 <span>4 min read</span><span>Horizon Consults</span></div><section className="section article-layout"><aside><Label>IN THIS ARTICLE</Label>{sections.map(([t],i)=><a key={t} href={'#section-'+i}>{t}</a>)}</aside><article><div className="article-hero-art"><Icon index={articles.indexOf(a)} size={64}/><span>Business first.<br/>Technology second.</span></div>{sections.map(([t,p],i)=><section key={t} id={'section-'+i}><h2>{t}</h2><p>{p}</p></section>)}</article></section><section className="section"><Title>Keep exploring.</Title><div className="directory-grid">{articles.filter(x=>x!==a).slice(0,3).map(x=><Link className="directory-card" key={x[1]} to={'/insights/'+x[1]}><Label>{x[2]}</Label><h3>{x[0]}</h3><span className="text-link">Read insight →</span></Link>)}</div></section><CTA/></>}
-function About(){return <><PageHero label="ABOUT HORIZON CONSULTS" title={<>Business-first thinking.<br/><em>Carefully delivered technology.</em></>} description="Horizon Consults is a UK technology and AI delivery partner. We connect commercial judgement, product thinking and senior engineering to build systems that are genuinely useful."><A/></PageHero><Why/><Delivery/><Capabilities/><Process/><Audience/><CTA/></>}
-function Contact({booking=false}){const [state,setState]=useState('default');const [errors,setErrors]=useState({});const [values,setValues]=useState({});const update=e=>{setValues({...values,[e.target.name]:e.target.type==='checkbox'?e.target.checked:e.target.value});setErrors({...errors,[e.target.name]:''});setState('default')};const submit=async e=>{e.preventDefault();let err={};for(const n of ['name','email','message'])if(!values[n]?.trim())err[n]='Please complete this field.';if(values.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))err.email='Enter a valid email address.';if(!values.consent)err.consent='Please confirm your consent.';setErrors(err);if(Object.keys(err).length)return;setState('loading');const endpoint=import.meta.env.VITE_CONTACT_ENDPOINT;if(!endpoint){await new Promise(r=>setTimeout(r,350));setState('unavailable');return}try{const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...values,type:booking?'booking':'contact'})});if(!res.ok)throw Error();setState('success');}catch{setState('error')}};return <><PageHero label={booking?'A USEFUL FIRST CONVERSATION':'CONTACT HORIZON'} title={booking?<>Let’s find the problem<br/><em>worth solving.</em></>:<>Tell us what’s<br/><em>getting in the way.</em></>} description={booking?'A free 30-minute discovery conversation. Share a little context and your preferred availability. No hard sell.':'Start with the problem, not a perfect brief. Tell us about your business and what you would like to change.'}/><section className="section contact-layout"><aside><Label>{booking?'YOUR DISCOVERY CALL':'UK ACCOUNTABILITY'}</Label><h3>{booking?'30 minutes. One honest conversation.':'A clear next step starts here.'}</h3><p>We’ll explore the challenge, discuss where technology could help and work out whether Horizon is the right fit.</p><ul className="check-list"><li><Check size={16}/> Business-first, not a sales pitch</li><li><Check size={16}/> No specification needed</li><li><Check size={16}/> Clear direction on what comes next</li></ul>{booking&&<div className="notice">Live scheduling is not connected yet. This page is ready for a booking integration; no time slot is reserved by this form.</div>}<p className="small">Verified contact details will be displayed here once configured. We do not publish unverified phone numbers or addresses.</p></aside><form noValidate onSubmit={submit} className="contact-form">{state==='success'?<div className="success-panel" role="status"><CheckCircle2 size={42}/><h2>Thank you.</h2><p>Your {booking?'discovery call request':'message'} has been received. {booking?'Your call is not booked until a time is confirmed.':'The team will review your enquiry.'}</p><button type="button" className="button" onClick={()=>{setValues({});setState('default')}}>Send another enquiry</button></div>:<><div className="form-grid">{[['name','Name','text',true],['email','Work Email','email',true],['company','Company','text'],['role','Role','text']].map(([n,l,t,req])=><label key={n}>{l}{req&&' *'}<input aria-label={l+(req?' *':'')} name={n} type={t} autoComplete={{name:'name',email:'email',company:'organization',role:'organization-title'}[n]} value={values[n]||''} onChange={update} aria-invalid={!!errors[n]} aria-describedby={errors[n]?n+'-error':undefined}/>{errors[n]&&<small id={n+'-error'} className="field-error">{errors[n]}</small>}</label>)}{[['service','Service Interest',['Not sure yet',...services.map(s=>s[0])]],['stage','Project Stage',['Exploring a problem','Shaping an idea','Ready to build','Improving an existing system']],['budget','Budget Range',['Prefer to discuss','Under £10,000','£10,000–£25,000','£25,000–£50,000','£50,000+']]].map(([n,l,opts])=><label key={n}>{l}<select name={n} value={values[n]||''} onChange={update}><option value="">Select an option</option>{opts.map(t=><option key={t}>{t}</option>)}</select></label>)}{booking&&<label>Preferred availability<input type="text" name="availability" value={values.availability||''} onChange={update} placeholder="e.g. Tuesday afternoons, UK time"/></label>}</div><label>Message *<textarea aria-label="Message *" name="message" rows={5} value={values.message||''} onChange={update} aria-invalid={!!errors.message} placeholder="What is getting in the way, and what would a better outcome look like?"/>{errors.message&&<small className="field-error">{errors.message}</small>}</label><label className="consent"><input name="consent" type="checkbox" checked={!!values.consent} onChange={update}/><span>I agree to Horizon using the information provided to respond to my enquiry. Read the <Link to="/privacy">privacy notice</Link>.</span></label>{errors.consent&&<p className="field-error">{errors.consent}</p>}{['unavailable','error'].includes(state)&&<div className="form-error" role="alert">{state==='unavailable'?'Online enquiries are not connected yet. Your message has not been sent. You can download your enquiry below to keep a copy.':'Your message could not be sent. Please try again. Your entries have been kept.'}{state==='unavailable'&&<a download="horizon-enquiry.txt" href={'data:text/plain;charset=utf-8,'+encodeURIComponent(Object.entries(values).filter(([k])=>k!=='consent').map(([k,v])=>k+': '+v).join('\n'))}>Download enquiry ↓</a>}</div>}<button className="button" disabled={state==='loading'} type="submit">{state==='loading'?'Sending…':booking?'Request a discovery call':'Send enquiry'}<ArrowRight size={16}/></button><p className="small">Your details are only used to respond to your enquiry.</p></>}</form></section></>}
-function Legal({type}){const texts={privacy:[['About this notice','This notice explains how information entered on this website is handled. The contact form requests your name, work email, business details and project context so Horizon can respond to your enquiry.'],['Information you provide','Only provide information needed to discuss your project. Do not submit passwords, financial credentials or sensitive personal information.'],['How information is used','When a contact integration is enabled, submitted information is used to review and respond to your enquiry. It is not submitted when the site reports that the integration is unavailable.'],['Storage and your choices','You can request information about the handling, correction or deletion of your enquiry through the contact page. Retention arrangements and the applicable controller contact must be confirmed before enabling live collection.'],['Third-party services','No advertising or analytics trackers are enabled in this implementation. Any future booking, analytics or enquiry processor must be documented here before activation.']],terms:[['Using this website','This website provides general information about Horizon Consults and its services. It is not a binding offer or professional advice for your specific situation.'],['Service agreements','Any engagement requires a separate written agreement covering scope, fees, responsibilities, intellectual property, confidentiality and applicable terms.'],['Content and delivery examples','Illustrative delivery examples explain potential approaches. They are not representations of verified client work, guaranteed outcomes or performance metrics.'],['Availability and external services','We aim to keep the site useful and accurate. Availability, integrations and content may change. A discovery call is only confirmed when a time is explicitly agreed.'],['Enquiries','Please use the contact page for questions about this website or a potential engagement.']],cookies:[['A minimal approach','This website does not currently use advertising cookies, analytics cookies or cross-site tracking.'],['Essential browser behaviour','The website uses ordinary navigation and in-memory interface state for menus, filters and form fields. Contact entries are not persisted in browser storage by this implementation.'],['Future integrations','If booking, analytics or other non-essential technologies are introduced, this notice and any required consent controls must be updated before activation.'],['Your browser controls','You can manage or delete cookies through your browser settings. Blocking essential technologies used by future integrations may affect their functionality.']]};return <><PageHero label="LEGAL / HORIZON CONSULTS" title={type[0].toUpperCase()+type.slice(1)} description="Last updated: 27 October 2026"/><section className="section legal-content"><div className="notice">Publication note: the operator’s verified legal identity, contact details and jurisdiction must be confirmed before commercial launch. This notice describes the current website implementation.</div>{texts[type].map(([t,p])=><section key={t}><h2>{t}</h2><p>{p}</p></section>)}<A to="/contact" secondary>Contact Horizon</A></section></>}
-function NotFound(){return <PageHero label="404 / PAGE NOT FOUND" title={<>Let’s get you<br/><em>back on track.</em></>} description="This page does not exist. Explore our services or start again from the homepage."><A to="/">Back to Horizon</A></PageHero>}
-function App(){const location=useLocation();useEffect(()=>{if(location.hash){requestAnimationFrame(()=>document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({behavior:'smooth'}))}},[location]);return <><a className="skip-link" href="#main">Skip to content</a><Header/><main id="main"><Routes><Route path="/" element={<Home/>}/><Route path="/services" element={<ServicesPage/>}/><Route path="/services/:slug" element={<ServicePage/>}/><Route path="/how-we-work" element={<HowPage/>}/><Route path="/case-studies" element={<CasesPage/>}/><Route path="/case-studies/:slug" element={<CaseDetail/>}/><Route path="/insights" element={<InsightsPage/>}/><Route path="/insights/:slug" element={<Article/>}/><Route path="/about" element={<About/>}/><Route path="/capabilities" element={<><PageHero label="CONNECTED CAPABILITIES" title={<>Specialist skills.<br/><em>One delivery system.</em></>} description="Design, engineering, quality, delivery and growth — connected around the work your business needs."/><Capabilities/><CTA/></>}/><Route path="/contact" element={<Contact/>}/><Route path="/book-a-call" element={<Contact booking/>}/>{['privacy','terms','cookies'].map(t=><Route key={t} path={'/'+t} element={<Legal type={t}/>}/>)}<Route path="*" element={<NotFound/>}/></Routes></main><Footer/></>};
-createRoot(document.getElementById('root')).render(<BrowserRouter><App/></BrowserRouter>);
+import React, { useState, useEffect, useRef } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  NavLink,
+  useLocation,
+} from "react-router-dom";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronRight,
+  Menu,
+  X,
+  Phone,
+  Workflow,
+  Bot,
+  PanelsTopLeft,
+  Rocket,
+  PenTool,
+  MousePointer2,
+  Map,
+  CalendarCheck,
+  Code2,
+  Database,
+  ShieldCheck,
+  GitBranch,
+  Search,
+  Globe,
+  MessageSquare,
+  Check,
+  ArrowUpRight,
+  Layers,
+  FileText,
+  Lock,
+  CheckCircle2,
+} from "lucide-react";
+import { groups, services, steps, cases, articles, faqs } from "./data";
+import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-500.css";
+import "@fontsource/inter/latin-600.css";
+import "@fontsource/inter/latin-700.css";
+import "./style.css";
+import { stories } from "./service-stories";
+import ServiceStoryVisual from "./ServiceStoryVisual";
+const icons = [
+  Workflow,
+  Bot,
+  PanelsTopLeft,
+  Rocket,
+  PenTool,
+  MousePointer2,
+  Map,
+  CalendarCheck,
+  Code2,
+  Database,
+  ShieldCheck,
+  GitBranch,
+  Search,
+  Globe,
+  MessageSquare,
+];
+const Icon = ({ index = 0, ...props }) => {
+  const I = icons[index % icons.length];
+  return <I size={18} strokeWidth={1.5} {...props} />;
+};
+const A = ({
+  to = "/book-a-call",
+  children,
+  secondary = false,
+  className = "",
+}) => (
+  <Link
+    className={`button ${secondary ? "secondary" : ""} ${className}`}
+    to={to}
+  >
+    {children || "Book a free 30-minute discovery call"}
+    <ArrowRight size={15} />
+  </Link>
+);
+const Label = ({ children }) => <div className="eyebrow">{children}</div>;
+const Title = ({ children }) => <h2>{children}</h2>;
+function Logo() {
+  return (
+    <Link className="logo" to="/" aria-label="Horizon Consults home">
+      <span className="logo-symbol">H</span>
+      <span>
+        Horizon Consults<small>UK TECHNOLOGY & AI DELIVERY</small>
+      </span>
+    </Link>
+  );
+}
+function ServiceGroup({ group }) {
+  return (
+    <div className="service-group">
+      <Label>{group[0]}</Label>
+      {group[1].map((s) => (
+        <NavLink
+          to={"/services/" + s[1]}
+          className={({ isActive }) =>
+            "menu-service" + (isActive ? " active" : "")
+          }
+          key={s[1]}
+        >
+          <span className="icon-box">
+            <Icon index={services.indexOf(s)} />
+          </span>
+          <span>
+            <strong>{s[0]}</strong>
+            <small>{s[2]}</small>
+          </span>
+        </NavLink>
+      ))}
+    </div>
+  );
+}
+function Header() {
+  const [open, setOpen] = useState("");
+  const [mobile, setMobile] = useState(false);
+  const ref = useRef();
+  const loc = useLocation();
+  useEffect(() => {
+    setOpen("");
+    setMobile(false);
+    window.scrollTo(0, 0);
+    document.title =
+      "Horizon Consults — " +
+      (loc.pathname === "/"
+        ? "Technology & AI Delivery"
+        : loc.pathname.split("/").pop().replaceAll("-", " "));
+  }, [loc]);
+  useEffect(() => {
+    const close = (e) => {
+      if (!ref.current?.contains(e.target)) setOpen("");
+    };
+    const key = (e) => {
+      if (e.key === "Escape") {
+        setOpen("");
+        setMobile(false);
+      }
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", key);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", key);
+    };
+  }, []);
+  return (
+    <header ref={ref} className="header">
+      <Logo />
+      <button
+        className="mobile-toggle"
+        onClick={() => setMobile(!mobile)}
+        aria-label="Toggle navigation"
+        aria-expanded={mobile}
+      >
+        {mobile ? <X /> : <Menu />}
+      </button>
+      <nav
+        className={mobile ? "nav mobile-open" : "nav"}
+        aria-label="Main navigation"
+      >
+        <div
+          onMouseEnter={() => !mobile && setOpen("services")}
+          className="nav-dropdown"
+        >
+          <button
+            className={loc.pathname.startsWith("/services") ? "nav-active" : ""}
+            aria-current={
+              loc.pathname.startsWith("/services") ? "true" : undefined
+            }
+            aria-expanded={open === "services"}
+            onClick={() => setOpen(open === "services" ? "" : "services")}
+          >
+            Services <ChevronDown size={13} />
+          </button>
+          {open === "services" && (
+            <div className="mega">
+              <div className="mega-top">
+                WHAT WE DO{" "}
+                <span>
+                  <i /> 15 SERVICES <em>4 PRACTICES</em>
+                </span>
+              </div>
+              <div className="mega-columns">
+                <div>
+                  <ServiceGroup group={groups[0]} />
+                  <ServiceGroup group={groups[1]} />
+                </div>
+                <div>
+                  <ServiceGroup group={groups[2]} />
+                  <ServiceGroup group={groups[3]} />
+                </div>
+              </div>
+              <div className="mega-footer">
+                <Link to="/contact">
+                  Not sure which fits? Start with the problem.
+                </Link>
+                <span>
+                  <Link to="/services">View all services</Link>
+                  <Link to="/book-a-call">Book a call →</Link>
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+        <NavLink to="/how-we-work">How We Work</NavLink>
+        <NavLink to="/case-studies">Case Studies</NavLink>
+        <NavLink to="/insights">Insights</NavLink>
+        <div
+          className="nav-dropdown"
+          onMouseEnter={() => !mobile && setOpen("company")}
+        >
+          <button
+            className={
+              ["/about", "/capabilities", "/contact"].includes(loc.pathname)
+                ? "nav-active"
+                : ""
+            }
+            aria-expanded={open === "company"}
+            onClick={() => setOpen(open === "company" ? "" : "company")}
+          >
+            Company <ChevronDown size={13} />
+          </button>
+          {open === "company" && (
+            <div className="company-menu">
+              {[
+                ["About Horizon", "/about"],
+                ["Delivery Model", "/about#delivery"],
+                ["Capabilities", "/capabilities"],
+                ["Who We Work With", "/about#audience"],
+                ["Contact", "/contact"],
+              ].map(([t, p]) => (
+                <Link
+                  to={p}
+                  key={p}
+                  className={loc.pathname + loc.hash === p ? "active" : ""}
+                  aria-current={
+                    loc.pathname + loc.hash === p ? "page" : undefined
+                  }
+                >
+                  {t}
+                  <ArrowUpRight size={14} />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="nav-actions">
+          <NavLink
+            className={({ isActive }) =>
+              "contact-pill" + (isActive ? " active" : "")
+            }
+            to="/contact"
+          >
+            <Phone size={13} />
+            UK Contact
+          </NavLink>
+          <A>Book a Call</A>
+        </div>
+      </nav>
+    </header>
+  );
+}
+function WorkflowVisual({ dark = false, mode = 0 }) {
+  return (
+    <div className={`workflow-visual ${dark ? "dark-visual" : ""}`}>
+      <div className="visual-bar">
+        <span>
+          0{mode + 1} ·{" "}
+          {["WORKFLOW", "INTELLIGENCE", "OPERATIONS", "NEW PRODUCT"][mode]}
+        </span>
+        <span>Inbox · Sheets · CRM</span>
+      </div>
+      <div className="workflow-body">
+        <div className="mini-document">
+          <Label>
+            {
+              [
+                "ENQUIRY INBOX",
+                "KNOWLEDGE BASE",
+                "BUSINESS PLATFORM",
+                "PRODUCT RELEASE",
+              ][mode]
+            }
+          </Label>
+          <div className="skeleton long" />
+          <div className="skeleton" />
+          <div className="skeleton short" />
+        </div>
+        <span className="connector">→</span>
+        <div className="workflow-stack">
+          <div className="gradient-pill">
+            {
+              ["Automation", "AI agent", "Connected system", "First release"][
+                mode
+              ]
+            }
+          </div>
+          {["Sheets updated", "CRM record synced", "Report sent"].map(
+            (t, i) => (
+              <div className="mini-step" key={t}>
+                <i />
+                {mode === 1
+                  ? ["Source checked", "Draft prepared", "Human reviewed"][i]
+                  : t}
+                <Check size={10} />
+              </div>
+            ),
+          )}
+        </div>
+      </div>
+      <div className="visual-bottom">
+        <span>NO RE-TYPING</span>
+        <span>HANDOVER REMOVED</span>
+      </div>
+    </div>
+  );
+}
+function Transformation() {
+  return (
+    <div className="transformation">
+      <div className="trans-column">
+        <Label>◦ FRAGMENTED BUSINESS</Label>
+        {[
+          "Customer enquiry",
+          "Spreadsheet process",
+          "CRM",
+          "Documents",
+          "Approvals",
+          "Legacy system",
+        ].map((t, i) => (
+          <div className="input-row" key={t}>
+            <FileText size={11} />
+            <span>{t}</span>
+            <small>
+              •{" "}
+              {
+                [
+                  "retyped by hand",
+                  "duplicate rows",
+                  "not synced",
+                  "scattered files",
+                  "delayed approval",
+                  "no integration",
+                ][i]
+              }
+            </small>
+          </div>
+        ))}
+        <div className="single-truth">
+          <CheckCircle2 size={16} />
+          <span>
+            Six sources, no single version of the truth.
+            <br />
+            Somebody is holding it together by hand.
+          </span>
+        </div>
+      </div>
+      <div className="horizon-engine">
+        <Label>• Horizon</Label>
+        <div className="engine-icon">H</div>
+        {["Automation", "AI", "Integration", "Business logic"].map((t) => (
+          <div key={t}>
+            {t}
+            <span>+</span>
+          </div>
+        ))}
+        <div className="engine-lights">
+          <i />
+          <i />
+          <i />
+        </div>
+      </div>
+      <div className="connected">
+        <Label>
+          • CONNECTED BUSINESS <b>LIVE</b>
+        </Label>
+        <div className="connected-panel">
+          <strong>
+            Connected operations <span>Synced</span>
+          </strong>
+          <div className="output-grid">
+            {["Automated workflow", "AI-assisted review", "Human approval"].map(
+              (t) => (
+                <div key={t}>
+                  {t}
+                  <div className="skeleton" />
+                </div>
+              ),
+            )}
+          </div>
+          <div className="chart">
+            {[30, 40, 36, 52, 48, 65, 72, 80, 73].map((h, i) => (
+              <i style={{ height: h + "%" }} key={i} />
+            ))}
+          </div>
+          <div className="report-label">
+            Live reporting <span>Centralised information</span>
+          </div>
+          <div className="aligned">● All systems aligned</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function Friction() {
+  return (
+    <div className="friction">
+      <div className="visual-bar">
+        <span>FROM FRICTION TO FLOW</span>
+        <span>4 STEPS · START HERE</span>
+      </div>
+      <div className="friction-grid">
+        {[
+          "Tell us what is getting in the way",
+          "Find the highest-value opportunity",
+          "Build with a named senior team",
+          "Launch something useful",
+        ].map((t, i) => (
+          <div key={t}>
+            <span className="step-icon">
+              <Icon index={i} />
+            </span>
+            <small>0{i + 1}</small>
+            <strong>{t}</strong>
+            <p>
+              {
+                [
+                  "One honest conversation",
+                  "Workflow, system or product",
+                  "Visible progress, reviewed work",
+                  "Measured against the agreed goal",
+                ][i]
+              }
+            </p>
+          </div>
+        ))}
+      </div>
+      <div className="friction-bottom">
+        ✧ Start with the problem, not the tool —{" "}
+        <Link to="/how-we-work">see how we work</Link>
+      </div>
+    </div>
+  );
+}
+function Problem() {
+  const [active, setActive] = useState(0);
+  const rows = [
+    "Data is retyped by hand",
+    "Duplicate records and unclear ownership",
+    "Approvals wait on one person",
+    "Reporting arrives too late to act on",
+  ];
+  return (
+    <section className="section">
+      <Label>WHERE PROGRESS STALLS</Label>
+      <Title>
+        Your business has moved on.
+        <br />
+        <em>Your tools have not.</em>
+      </Title>
+      <div className="two-col problem-grid">
+        <div className="problem-list">
+          {rows.map((t, i) => (
+            <button
+              key={t}
+              className={active === i ? "active" : ""}
+              onClick={() => setActive(i)}
+              aria-pressed={active === i}
+            >
+              <small>0{i + 1}</small>
+              <span>
+                <strong>{t}</strong>
+                {active === i && (
+                  <p>
+                    {
+                      [
+                        "The same information is entered into two or three systems because nothing talks to anything else. It is slow, it creates errors, and it means your reporting depends on someone remembering.",
+                        "Different versions of the same record make it hard to know what is correct, current or owned.",
+                        "Important decisions sit in inboxes instead of moving through a clear, accountable workflow.",
+                        "By the time the numbers are assembled, the moment to do something useful has passed.",
+                      ][i]
+                    }
+                  </p>
+                )}
+              </span>
+              <ChevronRight size={15} />
+            </button>
+          ))}
+        </div>
+        <div className="legacy-visual">
+          <div className="visual-bar">
+            <strong>
+              {
+                [
+                  "Customer enquiry · entered three times",
+                  "Customer records · disconnected",
+                  "Approval queue · waiting for review",
+                  "Monthly report · out of date",
+                ][active]
+              }
+            </strong>
+            <span>MANUAL ENTRY</span>
+          </div>
+          <div className="table-row table-head">
+            <span>RECORD</span>
+            <span>SYSTEM</span>
+            <span>STATUS</span>
+            <span />
+          </div>
+          {["Enquiry", "Enquiry (copy)", "Job record", "Job sheet"].map(
+            (t, i) => (
+              <div className="table-row" key={t}>
+                <span>{t}</span>
+                <span>{["CRM", "Spreadsheet", "CRM", "Shared drive"][i]}</span>
+                <span>{i === active ? "Needs review" : "Open"}</span>
+                <span className={i === active ? "error-line" : "skeleton"} />
+              </div>
+            ),
+          )}
+          <div className="warning">
+            ⚠ Same information keyed by hand into 3 systems today
+          </div>
+          <div className="legacy-note">
+            <Label>{rows[active]}</Label>
+            <p>A familiar process. An avoidable bottleneck.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+function CoreServices() {
+  const [active, setActive] = useState(0);
+  return (
+    <section className="section">
+      <Label>CORE SERVICES</Label>
+      <Title>
+        The right technology for
+        <br />
+        <em>the right problem.</em>
+      </Title>
+      <p className="intro">
+        Four ways in. Every engagement is scoped and agreed before work begins —
+        with a first deliverable you can plan around.
+      </p>
+      <div className="two-col core-grid">
+        <div>
+          {services.slice(0, 4).map((s, i) => (
+            <div
+              className={`core-row ${active === i ? "selected" : ""}`}
+              key={s[1]}
+            >
+              <button onClick={() => setActive(i)} aria-pressed={active === i}>
+                <span className="number">0{i + 1}</span>
+                <div>
+                  <Label>{s[3]}</Label>
+                  <h3>{s[0]}</h3>
+                  <p>{s[2]}</p>
+                </div>
+              </button>
+              <Link aria-label={"Explore " + s[0]} to={"/services/" + s[1]}>
+                Explore →
+              </Link>
+            </div>
+          ))}
+        </div>
+        <WorkflowVisual dark mode={active} />
+      </div>
+    </section>
+  );
+}
+function Why() {
+  return (
+    <section className="white-band">
+      <div className="section two-col">
+        <div>
+          <Label>WHY HORIZON CONSULTS</Label>
+          <Title>
+            Good software
+            <br />
+            starts with
+            <br />
+            <em>better judgement.</em>
+          </Title>
+          <p className="intro">
+            A useful solution starts long before the first line of code. We ask
+            better questions, make the trade-offs clear and build around the
+            business.
+          </p>
+        </div>
+        <div className="principles">
+          {[
+            [
+              "Business-first discovery",
+              "We look at where time, revenue or customer experience is leaking before we recommend a solution.",
+            ],
+            [
+              "Senior people stay involved",
+              "The people shaping the work stay close to its delivery. No hand-off into a black box.",
+            ],
+            [
+              "Commercial clarity",
+              "Clear scope, sensible decisions and a shared understanding of what success looks like.",
+            ],
+            [
+              "Built to belong to you",
+              "Your systems, your information, your future. Documented and designed for handover.",
+            ],
+          ].map(([t, p], i) => (
+            <div key={t}>
+              <small>0{i + 1}</small>
+              <div>
+                <h3>{t}</h3>
+                <p>{p}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="trust-strip wrap">
+        {[
+          "Business-led discovery",
+          "Clear scope & ownership",
+          "Visible senior delivery",
+          "Responsible use of AI",
+          "Built for the long term",
+        ].map((t) => (
+          <div key={t}>
+            <Check size={14} />
+            {t}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+function Delivery() {
+  return (
+    <section className="dark-band" id="delivery">
+      <div className="wrap">
+        <Label>THE HORIZON DELIVERY MODEL</Label>
+        <Title>
+          UK accountability.
+          <br />
+          Senior international
+          <br />
+          <em>engineering.</em>
+        </Title>
+        <p className="intro">
+          One accountable delivery partner. A senior team built around the work.
+          <br />
+          Product direction, planning and delivery coordination kept aligned
+          from scope through release.
+        </p>
+        <div className="delivery-system">
+          <div>
+            <Label>UK ACCOUNTABILITY</Label>
+            {[
+              "Business alignment & discovery",
+              "Scope & commercial clarity",
+              "Product & Project Management",
+              "Communication & governance",
+            ].map((t) => (
+              <div className="delivery-item" key={t}>
+                <CheckCircle2 size={15} />
+                {t}
+              </div>
+            ))}
+          </div>
+          <div className="delivery-core">
+            <div className="orbit">
+              <span>H</span>
+            </div>
+            <strong>Horizon Delivery System</strong>
+            <small>One team. Shared standards.</small>
+          </div>
+          <div>
+            <Label>SENIOR DELIVERY TEAM</Label>
+            {[
+              "Engineering",
+              "Design",
+              "Product",
+              "QA & technical leadership",
+            ].map((t) => (
+              <div className="delivery-item" key={t}>
+                <Icon
+                  index={
+                    services.findIndex((s) => s[0].includes(t)) < 0 ? 8 : 4
+                  }
+                />
+                {t}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+function CaseVisual({ index = 0 }) {
+  return (
+    <div className={"case-visual cv-" + index}>
+      <div className="case-app">
+        <div className="case-app-nav">
+          <span className="tiny-brand">H</span>
+          <span>Workspace</span>
+          <span>Overview</span>
+          <span>Activity</span>
+          <span>•••</span>
+        </div>
+        <div className="case-app-main">
+          <div className="case-app-heading">
+            {
+              [
+                "Workflow overview",
+                "Product analytics",
+                "Operations workspace",
+                "Knowledge centre",
+              ][index]
+            }
+            <span>↗</span>
+          </div>
+          {index === 1 ? (
+            <>
+              <div className="stat-cards">
+                {["Engagement", "Activity", "Overview"].map((t) => (
+                  <div key={t}>
+                    <small>{t}</small>
+                    <div className="skeleton" />
+                  </div>
+                ))}
+              </div>
+              <div className="bar-chart">
+                {[22, 33, 29, 52, 45, 64, 56, 73, 69, 86, 80, 97].map(
+                  (h, i) => (
+                    <i key={i} style={{ height: h + "%" }} />
+                  ),
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              {[
+                "Customer enquiry",
+                "Document review",
+                "Team approval",
+                "Ready to deliver",
+              ].map((t, i) => (
+                <div className="app-record" key={t}>
+                  <span className="record-dot" />
+                  <span>{t}</span>
+                  <span className="skeleton" />
+                  <small>{i % 2 ? "In review" : "Complete"}</small>
+                </div>
+              ))}
+              <div className="app-summary">
+                <span />
+                <span />
+                <span />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+function CaseGrid({ limit = 4, items = cases }) {
+  return (
+    <div className="case-grid">
+      {items.slice(0, limit).map((c) => (
+        <Link className="case-card" to={"/case-studies/" + c[1]} key={c[1]}>
+          <CaseVisual index={cases.indexOf(c)} />
+          <div className="case-copy">
+            <Label>
+              {c[2]} · {c[3]}
+            </Label>
+            <h3>
+              {c[0]}
+              <ArrowUpRight size={19} />
+            </h3>
+            <p>{c[4]}</p>
+            <span className="text-link">Explore the delivery example →</span>
+            <small className="example-note">
+              Illustrative delivery example · not a client claim
+            </small>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+function Work() {
+  return (
+    <section className="section" id="work">
+      <Label>SELECTED WORK & DELIVERY EXAMPLES</Label>
+      <Title>
+        Proof over <em>promises.</em>
+      </Title>
+      <p className="intro">
+        A closer look at how the right thinking becomes a working system.
+        <br />
+        Illustrative examples of the problems we help businesses solve.
+      </p>
+      <CaseGrid />
+    </section>
+  );
+}
+function Governance() {
+  return (
+    <section className="white-band">
+      <div className="section">
+        <Label>CONFIDENCE THROUGHOUT DELIVERY</Label>
+        <Title>
+          Clear ownership. <em>Careful delivery.</em>
+        </Title>
+        <p className="intro">
+          Know who is responsible, what is moving and how decisions get made.
+        </p>
+        <div className="two-col">
+          <div className="governance-visual">
+            <div className="visual-bar">
+              DELIVERY WITH CONFIDENCE <ShieldCheck size={15} />
+            </div>
+            <div className="governance-path">
+              {["Scope", "Design", "Build", "Review", "Release"].map((t, i) => (
+                <div key={t}>
+                  <span>
+                    {i === 0 ? <Check size={17} /> : <Icon index={i + 4} />}
+                  </span>
+                  <small>{t}</small>
+                </div>
+              ))}
+            </div>
+            <div className="governance-status">
+              <span>● Named owners</span>
+              <span>● Clear checkpoints</span>
+              <span>● Shared visibility</span>
+            </div>
+          </div>
+          <div className="governance-copy">
+            {[
+              [
+                "Named accountability",
+                "Clear responsibilities, not a rotating cast.",
+              ],
+              [
+                "A shared view of progress",
+                "Regular reviews and decisions made in the open.",
+              ],
+              [
+                "Quality built in",
+                "Testing, review and release discipline throughout.",
+              ],
+              ["Responsible AI", "Human judgement where the outcome matters."],
+            ].map(([t, p]) => (
+              <div key={t}>
+                <h4>{t}</h4>
+                <p>{p}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+function Process() {
+  return (
+    <section className="section">
+      <Label>HOW WE WORK</Label>
+      <Title>
+        Five steps from open question
+        <br />
+        to <em>working system.</em>
+      </Title>
+      <p className="intro">
+        A clear path, without pretending every project is the same.
+      </p>
+      <div className="timeline">
+        {steps.map(([t, p], i) => (
+          <Link
+            className={"timeline-card step-" + i}
+            to={"/how-we-work#" + t.toLowerCase().replaceAll(" ", "-")}
+            key={t}
+          >
+            <span className="timeline-number">0{i + 1}</span>
+            <div>
+              <h3>{t}</h3>
+              <p>{p}</p>
+              <span className="text-link">Learn more →</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+function Fractional() {
+  return (
+    <section className="section fractional">
+      <Label>FRACTIONAL LEADERSHIP</Label>
+      <div className="two-col">
+        <div>
+          <Title>
+            Sometimes you don’t need
+            <br />
+            another development team.
+            <br />
+            You need{" "}
+            <em>
+              the right person
+              <br />
+              running the one you have.
+            </em>
+          </Title>
+          {[
+            [
+              "Fractional Product Manager",
+              "product-management",
+              "Bring clarity to priorities, product decisions and the next useful release.",
+            ],
+            [
+              "Fractional Project Manager",
+              "project-management",
+              "Keep scope, people and delivery moving in the same direction.",
+            ],
+          ].map(([t, p, d], i) => (
+            <Link className="role-link" to={"/services/" + p} key={p}>
+              <Icon index={i + 6} />
+              <div>
+                <h3>{t}</h3>
+                <p>{d}</p>
+              </div>
+              <ArrowUpRight size={16} />
+            </Link>
+          ))}
+        </div>
+        <div className="leadership-visual">
+          <Label>THE RIGHT LEADERSHIP. IN THE RIGHT PLACE.</Label>
+          <div className="leadership-tabs">
+            <span>Direction</span>
+            <span>Priorities</span>
+            <span>Delivery</span>
+          </div>
+          {[
+            "A clear product roadmap",
+            "Decisions with commercial context",
+            "A team that knows what matters",
+            "Progress everyone can see",
+          ].map((t) => (
+            <div className="leadership-row" key={t}>
+              <CheckCircle2 size={15} />
+              {t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+const capabilityGroups = [
+  [
+    "DESIGN",
+    [
+      ["Product Design", "product-design"],
+      ["UX Design", "ux-ui-design"],
+      ["UI Design", "ux-ui-design"],
+    ],
+  ],
+  [
+    "ENGINEERING",
+    [
+      ["AI Agent", "ai-agents"],
+      ["AI Automation", "ai-automation"],
+      ["Frontend Development", "frontend-development"],
+      ["Backend Development", "backend-development"],
+      ["Forward Deploy Engineering", "forward-deploy-engineering"],
+    ],
+  ],
+  ["QUALITY", [["QA & Testing", "qa-testing"]]],
+  [
+    "DELIVERY",
+    [
+      ["Product Management", "product-management"],
+      ["Project Management", "project-management"],
+    ],
+  ],
+  [
+    "GROWTH",
+    [
+      ["SEO", "seo"],
+      ["GEO", "geo"],
+      ["AEO", "aeo"],
+    ],
+  ],
+];
+function Capabilities() {
+  return (
+    <section className="section capabilities">
+      <Label>OUR CAPABILITIES</Label>
+      <Title>
+        The skills needed to move from
+        <br />
+        <em>problem to working product.</em>
+      </Title>
+      <p className="intro">
+        Specialist skills, brought together around your business.
+        <br />
+        The right people for the work — not a fixed team looking for a problem.
+      </p>
+      <div className="capability-center">
+        <span className="logo-symbol">H</span> HORIZON
+      </div>
+      <div className="capability-grid">
+        {capabilityGroups.map(([t, items]) => (
+          <div key={t}>
+            <Label>{t}</Label>
+            {items.map(([n, s]) => (
+              <Link key={n} to={"/services/" + s}>
+                {n}
+                <ArrowUpRight size={12} />
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+function Audience() {
+  return (
+    <section className="section" id="audience">
+      <Label>WHO WE WORK WITH</Label>
+      <Title>
+        Built for businesses where
+        <br />
+        technology needs to create
+        <br />
+        <em>real commercial value.</em>
+      </Title>
+      <div className="audience-list">
+        {[
+          [
+            "UK SMEs · £1m–£20m revenue",
+            "Reduce operational friction and build systems that support the next stage of growth.",
+            "ai-automation",
+          ],
+          [
+            "Funded startups & scaleups",
+            "Shape the right product, build a focused release and grow with confidence.",
+            "mvp-development",
+          ],
+          [
+            "Professional services",
+            "Connect your people, knowledge and client workflows.",
+            "custom-software",
+          ],
+        ].map(([t, p, s]) => (
+          <Link to={"/services/" + s} key={t}>
+            <Icon index={s.length} />
+            <div>
+              <h3>{t}</h3>
+              <p>{p}</p>
+            </div>
+            <span>
+              Explore how we help <ArrowRight size={14} />
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+function FAQ({ items = faqs }) {
+  return (
+    <div className="faq-list">
+      {items.map(([q, a]) => (
+        <details key={q}>
+          <summary>
+            {q}
+            <span>+</span>
+          </summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  );
+}
+function FAQSection() {
+  return (
+    <section className="section two-col faq-section">
+      <div>
+        <Label>A FEW USEFUL ANSWERS</Label>
+        <Title>
+          Questions before
+          <br />
+          we start.
+        </Title>
+        <p className="intro">
+          No jargon, no pressure. If your question isn’t here, let’s talk it
+          through.
+        </p>
+        <A>Book a free discovery call</A>
+      </div>
+      <FAQ />
+    </section>
+  );
+}
+function CTA({ firstLine = "Have a problem", highlight = "worth solving?" }) {
+  return (
+    <section className="final-cta">
+      <Label>START WITH AN HONEST CONVERSATION</Label>
+      <h2>
+        {firstLine}
+        <br />
+        <em>{highlight}</em>
+      </h2>
+      <p>
+        Tell us what is getting in the way.
+        <br />
+        We’ll help you work out what is worth doing next.
+      </p>
+      <div className="cta-buttons">
+        <A />
+        <A to="/contact" secondary>
+          Tell us about your project
+        </A>
+      </div>
+      <small>No hard sell. Just a useful first conversation.</small>
+    </section>
+  );
+}
+function Footer() {
+  return (
+    <footer>
+      <div className="wrap footer-grid">
+        <div>
+          <Logo />
+          <p>
+            UK technology and AI delivery.
+            <br />
+            Find the problem worth solving.
+            <br />
+            Then build it properly.
+          </p>
+          <Link className="text-link" to="/contact">
+            Get in touch →
+          </Link>
+        </div>
+        {[
+          [
+            "Services",
+            ...services.slice(0, 4).map((s) => [s[0], "/services/" + s[1]]),
+            ["All services", "/services"],
+          ],
+          [
+            "Company",
+            ["About Horizon", "/about"],
+            ["How We Work", "/how-we-work"],
+            ["Capabilities", "/capabilities"],
+            ["Contact", "/contact"],
+          ],
+          [
+            "Resources",
+            ["Case Studies", "/case-studies"],
+            ["Insights", "/insights"],
+            ["Book a Call", "/book-a-call"],
+          ],
+          [
+            "Legal",
+            ["Privacy", "/privacy"],
+            ["Terms", "/terms"],
+            ["Cookies", "/cookies"],
+          ],
+        ].map(([t, ...links]) => (
+          <div key={t}>
+            <h4>{t}</h4>
+            {links.map(([n, p]) => (
+              <NavLink key={p} to={p}>
+                {n}
+              </NavLink>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="wrap footer-bottom">
+        <span>
+          © {new Date().getFullYear()} Horizon Consults. All rights reserved.
+        </span>
+        <span>Business-first thinking. Carefully delivered technology.</span>
+      </div>
+    </footer>
+  );
+}
+function Home() {
+  return (
+    <>
+      <section className="hero wrap">
+        <div className="hero-copy">
+          <Label>UK TECHNOLOGY & AI DELIVERY PARTNER</Label>
+          <h1>
+            Find the problem
+            <br />
+            worth solving.
+            <br />
+            Then build
+            <br />
+            <em>it properly.</em>
+          </h1>
+          <p>
+            Horizon Consults is a UK technology and AI delivery partner. We
+            identify the highest-value opportunity in your business — an AI
+            workflow, a custom system or a new product — and deliver it with UK
+            accountability, a senior team and pricing that reflects real
+            delivery economics.
+          </p>
+          <A>Book a Free 30-Minute Discovery Call</A>
+          <A secondary to="/how-we-work">
+            See How We Work
+          </A>
+        </div>
+        <div className="hero-visual">
+          <Transformation />
+          <Friction />
+        </div>
+      </section>
+      <Problem />
+      <CoreServices />
+      <Why />
+      <Delivery />
+      <Work />
+      <Governance />
+      <Process />
+      <Fractional />
+      <Capabilities />
+      <Audience />
+      <FAQSection />
+      <CTA />
+    </>
+  );
+}
+function PageHero({ label, title, description, children }) {
+  return (
+    <section className="page-hero wrap">
+      <Label>{label}</Label>
+      <h1>{title}</h1>
+      {description && <p>{description}</p>}
+      {children}
+    </section>
+  );
+}
+function ServicesPage() {
+  return (
+    <>
+      <PageHero
+        label="SERVICES"
+        title={
+          <>
+            Technology should solve a business problem,{" "}
+            <em>not create another one.</em>
+          </>
+        }
+        description="Explore Horizon’s design, engineering, AI, delivery and growth capabilities — combined around the problem your business actually needs to solve."
+      >
+        <A />
+      </PageHero>
+      <section className="section services-directory">
+        {groups.map((g) => (
+          <div key={g[0]}>
+            <Label>{g[0]}</Label>
+            <div className="directory-grid">
+              {g[1].map((s) => (
+                <Link
+                  className="directory-card"
+                  to={"/services/" + s[1]}
+                  key={s[1]}
+                >
+                  <span className="icon-box">
+                    <Icon index={services.indexOf(s)} />
+                  </span>
+                  <h3>{s[0]}</h3>
+                  <p>{s[2]}</p>
+                  <span className="text-link">Explore service →</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
+      <Capabilities />
+      <Process />
+      <Work />
+      <FAQSection />
+      <CTA />
+    </>
+  );
+}
+function ServicePage() {
+  const slug = useLocation().pathname.split("/").pop();
+  const service = services.find((s) => s[1] === slug);
+  const story = stories[slug];
+  if (!service || !story) return <NotFound />;
+  return (
+    <div className="service-story-page">
+      <section className="service-story-hero wrap">
+        <div>
+          <Label>{story.eyebrow}</Label>
+          <h1>
+            {story.lead}
+            <em>{story.highlight}</em>
+            {story.tail}
+          </h1>
+          <p>{story.copy}</p>
+          <div className="service-hero-actions">
+            <A>{story.primary || "Discuss " + service[0]}</A>
+            <A to="/how-we-work" secondary>
+              See how we work
+            </A>
+          </div>
+        </div>
+        <ServiceStoryVisual story={story} />
+      </section>
+      <section className="section two-col story-problem">
+        <div>
+          <Label>01 / THE PROBLEM</Label>
+          <Title>{story.problem}</Title>
+        </div>
+        <div>
+          <p className="intro">{story.pain}</p>
+          <h3>Who this is for</h3>
+          <p>{story.audience}</p>
+        </div>
+      </section>
+      <section className="white-band">
+        <div className="section">
+          <Label>02 / WHAT HORIZON DELIVERS</Label>
+          <Title>{story.deliverTitle}</Title>
+          <div className="directory-grid">
+            {story.deliver.map(([title, copy], i) => (
+              <div className="directory-card" key={title}>
+                <span className="icon-box">
+                  <Icon index={services.indexOf(service) + i} />
+                </span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section story-process">
+        <Label>03 / HOW IT WORKS</Label>
+        <Title>{story.system}, step by step.</Title>
+        <ol>
+          {story.process.map((step, i) => (
+            <li key={step}>
+              <span className="timeline-number">0{i + 1}</span>
+              <h3>{step}</h3>
+            </li>
+          ))}
+        </ol>
+        <Link to="/how-we-work" className="text-link">
+          See the shared Horizon delivery approach →
+        </Link>
+      </section>
+      <section className="section story-capabilities">
+        <Label>04 / RELEVANT CAPABILITIES</Label>
+        <Title>The expertise behind {story.system.toLowerCase()}.</Title>
+        <div className="tags">
+          {story.capabilities.map((c) => (
+            <span key={c}>{c}</span>
+          ))}
+        </div>
+        <Link className="text-link" to="/capabilities">
+          Explore the full capability system →
+        </Link>
+      </section>
+      <section className="story-system-band">
+        <div className="section">
+          <Label>05 / SYSTEM IN CONTEXT</Label>
+          <Title>{story.workflowTitle}</Title>
+          <ServiceStoryVisual story={story} expanded />
+          <div className="story-use-cases">
+            {story.useCases.map((c, i) => (
+              <div key={c}>
+                <Label>EXAMPLE USE CASE / 0{i + 1}</Label>
+                <h3>{c}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section story-proof">
+        <Label>06 / EVIDENCE & CONTEXT</Label>
+        <Title>Discuss the evidence behind the approach.</Title>
+        <p className="intro">
+          For {service[0].toLowerCase()}, a useful proof conversation starts
+          with your systems, constraints and intended outcome. No approved
+          client case study for this service is published here yet; we do not
+          present illustrative workflows as client results.
+        </p>
+        <A to="/contact" secondary>
+          Ask about relevant experience
+        </A>
+      </section>
+      <section className="section two-col">
+        <div>
+          <Label>07 / SERVICE QUESTIONS</Label>
+          <Title>Before you commit to {service[0].toLowerCase()}.</Title>
+        </div>
+        <FAQ items={story.faq} />
+      </section>
+      <section className="section">
+        <Label>08 / CONNECTED EXPERTISE</Label>
+        <Title>Where {service[0].toLowerCase()} connects.</Title>
+        <div className="directory-grid">
+          {story.related.map((slug) => {
+            const r = services.find((s) => s[1] === slug);
+            return (
+              <Link
+                className="directory-card"
+                key={slug}
+                to={"/services/" + slug}
+              >
+                <h3>{r[0]}</h3>
+                <p>{r[2]}</p>
+                <span className="text-link">Explore service →</span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+      <CTA firstLine={story.cta} highlight={story.ctaHighlight} />
+    </div>
+  );
+}
+function HowPage() {
+  return (
+    <>
+      <PageHero
+        label="HOW WE WORK"
+        title={
+          <>
+            <em>Clear decisions</em> before expensive development.
+          </>
+        }
+        description="Horizon combines discovery, product thinking, engineering and delivery governance so projects move from uncertain questions to working systems with clear ownership."
+      >
+        <A />
+      </PageHero>
+      <Process />
+      <section className="section">
+        {steps.map(([t, p], i) => (
+          <div
+            id={t.toLowerCase().replaceAll(" ", "-")}
+            className="process-detail"
+            key={t}
+          >
+            <span className="timeline-number">0{i + 1}</span>
+            <div>
+              <Label>
+                {
+                  [
+                    "DISCOVERY & PROBLEM FRAMING",
+                    "SOLUTION SHAPING & DESIGN",
+                    "SCOPE & PRODUCT / PROJECT MANAGEMENT",
+                    "ENGINEERING & QA",
+                    "LAUNCH & GOVERNANCE",
+                  ][i]
+                }
+              </Label>
+              <h2>{t}</h2>
+              <p>
+                {p}{" "}
+                {
+                  [
+                    "We speak with stakeholders, understand the current workflow and identify where a change could create real value.",
+                    "We explore options, map user journeys and test the assumptions before committing to a build.",
+                    "We agree deliverables, ownership, review points and commercial terms. Product and project management keep direction and coordination aligned.",
+                    "Design and engineering work together in reviewable increments. Testing and technical review are part of the work, not a final phase.",
+                    "We plan the release, document the system and agree handover, support and the next learning priorities.",
+                  ][i]
+                }
+              </p>
+            </div>
+          </div>
+        ))}
+      </section>
+      <Governance />
+      <Delivery />
+      <CTA />
+    </>
+  );
+}
+function CasesPage() {
+  const [industry, setIndustry] = useState("All industries");
+  const [service, setService] = useState("All services");
+  const filtered = cases.filter(
+    (c) =>
+      (industry === "All industries" || c[2] === industry) &&
+      (service === "All services" || c[3] === service),
+  );
+  return (
+    <>
+      <PageHero
+        label="CASE STUDIES"
+        title={<>Proof should be specific.</>}
+        description="See how operational problems, product ideas and technology constraints are turned into focused solutions and measurable outcomes."
+      />
+      <section className="section">
+        <div className="notice">
+          The examples below illustrate delivery approaches, not verified client
+          engagements or measured outcomes. Approved client case studies have
+          not yet been supplied.
+        </div>
+        <Label>DELIVERY EXAMPLES</Label>
+        <div className="filters">
+          <label>
+            Industry
+            <select
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+            >
+              {["All industries", ...new Set(cases.map((c) => c[2]))].map(
+                (t) => (
+                  <option key={t}>{t}</option>
+                ),
+              )}
+            </select>
+          </label>
+          <label>
+            Service
+            <select
+              value={service}
+              onChange={(e) => setService(e.target.value)}
+            >
+              {["All services", ...new Set(cases.map((c) => c[3]))].map((t) => (
+                <option key={t}>{t}</option>
+              ))}
+            </select>
+          </label>
+          <span aria-live="polite">{filtered.length} examples</span>
+        </div>
+        {filtered.length ? (
+          <CaseGrid items={filtered} />
+        ) : (
+          <div className="empty-state">
+            <h3>No examples in this combination.</h3>
+            <button
+              className="button"
+              onClick={() => {
+                setIndustry("All industries");
+                setService("All services");
+              }}
+            >
+              Reset filters
+            </button>
+          </div>
+        )}
+      </section>
+      <CTA />
+    </>
+  );
+}
+function CaseDetail() {
+  const c = cases.find((c) => c[1] === useLocation().pathname.split("/").pop());
+  if (!c) return <NotFound />;
+  return (
+    <>
+      <PageHero
+        label={"DELIVERY EXAMPLE / " + c[3]}
+        title={c[0]}
+        description={c[4]}
+      />
+      <div className="wrap">
+        <div className="notice">
+          <FileText size={18} />
+          Illustrative delivery example. This is not a verified client
+          engagement; no client metrics or results are claimed.
+        </div>
+        <CaseVisual index={cases.indexOf(c)} />
+      </div>
+      <section className="section article-layout">
+        <aside>
+          <Label>PROJECT OVERVIEW</Label>
+          <p>{c[2]}</p>
+          <p>{c[3]}</p>
+          <Link to="/contact" className="text-link">
+            Discuss a similar problem →
+          </Link>
+        </aside>
+        <article>
+          {[
+            [
+              "Business context",
+              "Growing teams often inherit a collection of tools that were useful individually but do not work well together. The opportunity is to build a more coherent way of working.",
+            ],
+            [
+              "The problem",
+              "Information moves between inboxes, documents and separate systems. Manual handovers obscure ownership and make it harder to see the current state of work.",
+            ],
+            [
+              "Our approach",
+              "Start by mapping the existing process with the people who use it. Identify avoidable friction, agree the highest-value change and define the smallest useful release.",
+            ],
+            [
+              "The solution",
+              "A connected workflow with explicit ownership, human review points and a shared view of progress. Integrations are chosen based on the existing systems and access available.",
+            ],
+            [
+              "System & workflow",
+              "Enquiry → structured intake → automated checks → human approval → delivery → reporting. Each transition has a clear owner and a visible status.",
+            ],
+            [
+              "Delivery process",
+              "Discovery and solution shaping are followed by an agreed scope, iterative design and engineering, structured testing and a planned release.",
+            ],
+            [
+              "Intended outcome",
+              "Less repetitive admin, clearer ownership and more useful operational visibility. Actual outcomes would need to be measured against an agreed baseline during a real engagement.",
+            ],
+          ].map(([t, p]) => (
+            <section key={t}>
+              <h2>{t}</h2>
+              <p>{p}</p>
+            </section>
+          ))}
+          <h3>Technology & capabilities</h3>
+          <div className="tags">
+            <span>{c[3]}</span>
+            <span>Workflow design</span>
+            <span>Integration</span>
+            <span>QA & Testing</span>
+          </div>
+        </article>
+      </section>
+      <section className="section">
+        <Title>Related work.</Title>
+        <CaseGrid items={cases.filter((x) => x !== c)} limit={2} />
+      </section>
+      <CTA />
+    </>
+  );
+}
+function InsightsPage() {
+  const [cat, setCat] = useState("All");
+  return (
+    <>
+      <PageHero
+        label="INSIGHTS"
+        title={<>Useful thinking for difficult technology decisions.</>}
+        description="Practical perspectives on AI, software, product delivery, engineering and search — written for people responsible for making technology work inside a business."
+      />
+      <section className="section">
+        <div className="filter-tabs">
+          {["All", ...articles.map((a) => a[2])].map((t) => (
+            <button
+              key={t}
+              aria-pressed={cat === t}
+              className={cat === t ? "active" : ""}
+              onClick={() => setCat(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        <div className="insight-grid">
+          {articles
+            .filter((a) => cat === "All" || a[2] === cat)
+            .map((a, i) => (
+              <Link
+                className="insight-card"
+                to={"/insights/" + a[1]}
+                key={a[1]}
+              >
+                <div className="insight-art">
+                  <Icon index={articles.indexOf(a)} size={40} />
+                  <span>HORIZON / PERSPECTIVES</span>
+                </div>
+                <Label>{a[2]} · 4 MIN READ</Label>
+                <h3>{a[0]}</h3>
+                <span className="text-link">Read insight →</span>
+              </Link>
+            ))}
+        </div>
+      </section>
+      <CTA />
+    </>
+  );
+}
+function Article() {
+  const a = articles.find(
+    (a) => a[1] === useLocation().pathname.split("/").pop(),
+  );
+  if (!a) return <NotFound />;
+  const sections = [
+    [
+      "Start with the business outcome",
+      `The most useful ${a[2].toLowerCase()} decisions start with a concrete business question. What is taking too long? Where does the customer experience break down? What cannot the team do reliably today? A clear answer gives the work a direction.`,
+    ],
+    [
+      "Understand the current workflow",
+      "Speak with the people doing the work. Follow the information between systems and identify where it is copied, delayed or checked. A workflow map is often more useful than a long list of features. It makes assumptions visible and gives everyone a shared reference.",
+    ],
+    [
+      "Keep judgement where it matters",
+      "Automation is not the same as removing accountability. Define the decisions that need a person, the information they need to make those decisions and the point at which a system should stop and ask for help. Make exceptions part of the design.",
+    ],
+    [
+      "Build the smallest useful change",
+      "Choose a bounded first release with an outcome you can observe. Agree what good looks like before building, review the work with real users and leave space to learn. A smaller, well-chosen change is easier to evaluate than a broad transformation with unclear goals.",
+    ],
+    [
+      "Measure, learn and own the result",
+      "Establish a baseline, agree how you will review the outcome and document the operational owner. Technology becomes useful when it fits everyday work and the business knows how to run it.",
+    ],
+  ];
+  return (
+    <>
+      <PageHero
+        label={a[2] + " / HORIZON INSIGHTS"}
+        title={a[0]}
+        description="A practical perspective on choosing useful work and delivering it with care."
+      />
+      <div className="wrap article-meta">
+        27 October 2026 <span>4 min read</span>
+        <span>Horizon Consults</span>
+      </div>
+      <section className="section article-layout">
+        <aside>
+          <Label>IN THIS ARTICLE</Label>
+          {sections.map(([t], i) => (
+            <a key={t} href={"#section-" + i}>
+              {t}
+            </a>
+          ))}
+        </aside>
+        <article>
+          <div className="article-hero-art">
+            <Icon index={articles.indexOf(a)} size={64} />
+            <span>
+              Business first.
+              <br />
+              Technology second.
+            </span>
+          </div>
+          {sections.map(([t, p], i) => (
+            <section key={t} id={"section-" + i}>
+              <h2>{t}</h2>
+              <p>{p}</p>
+            </section>
+          ))}
+        </article>
+      </section>
+      <section className="section">
+        <Title>Keep exploring.</Title>
+        <div className="directory-grid">
+          {articles
+            .filter((x) => x !== a)
+            .slice(0, 3)
+            .map((x) => (
+              <Link
+                className="directory-card"
+                key={x[1]}
+                to={"/insights/" + x[1]}
+              >
+                <Label>{x[2]}</Label>
+                <h3>{x[0]}</h3>
+                <span className="text-link">Read insight →</span>
+              </Link>
+            ))}
+        </div>
+      </section>
+      <CTA />
+    </>
+  );
+}
+function About() {
+  return (
+    <>
+      <PageHero
+        label="ABOUT HORIZON"
+        title={<>Senior thinking. Practical delivery.</>}
+        description="Horizon Consults helps businesses identify worthwhile technology opportunities and turn them into working systems with clear commercial and delivery responsibility."
+      >
+        <A />
+      </PageHero>
+      <Why />
+      <Delivery />
+      <Capabilities />
+      <Process />
+      <Audience />
+      <CTA />
+    </>
+  );
+}
+function Contact({ booking = false }) {
+  const [state, setState] = useState("default");
+  const [errors, setErrors] = useState({});
+  const [values, setValues] = useState({});
+  const update = (e) => {
+    setValues({
+      ...values,
+      [e.target.name]:
+        e.target.type === "checkbox" ? e.target.checked : e.target.value,
+    });
+    setErrors({ ...errors, [e.target.name]: "" });
+    setState("default");
+  };
+  const submit = async (e) => {
+    e.preventDefault();
+    let err = {};
+    for (const n of ["name", "email", "message"])
+      if (!values[n]?.trim()) err[n] = "Please complete this field.";
+    if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))
+      err.email = "Enter a valid email address.";
+    if (!values.consent) err.consent = "Please confirm your consent.";
+    setErrors(err);
+    if (Object.keys(err).length) return;
+    setState("loading");
+    const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+    if (!endpoint) {
+      await new Promise((r) => setTimeout(r, 350));
+      setState("unavailable");
+      return;
+    }
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...values,
+          type: booking ? "booking" : "contact",
+        }),
+      });
+      if (!res.ok) throw Error();
+      setState("success");
+    } catch {
+      setState("error");
+    }
+  };
+  return (
+    <>
+      <PageHero
+        label={booking ? "DISCOVERY CALL" : "START A CONVERSATION"}
+        title={
+          booking ? (
+            <>Thirty minutes to understand the problem.</>
+          ) : (
+            <>Tell us what is getting in the way.</>
+          )
+        }
+        description={
+          booking
+            ? "A practical first conversation about what is happening today, what needs to change and whether Horizon is the right partner to help."
+            : "You do not need a polished technical brief. Start with the business problem, workflow or product idea and we will help identify a sensible next step."
+        }
+      />
+      <section className="section contact-layout">
+        <aside>
+          <Label>{booking ? "YOUR DISCOVERY CALL" : "UK ACCOUNTABILITY"}</Label>
+          <h3>
+            {booking
+              ? "30 minutes. One honest conversation."
+              : "A clear next step starts here."}
+          </h3>
+          <p>
+            We’ll explore the challenge, discuss where technology could help and
+            work out whether Horizon is the right fit.
+          </p>
+          <ul className="check-list">
+            <li>
+              <Check size={16} /> Business-first, not a sales pitch
+            </li>
+            <li>
+              <Check size={16} /> No specification needed
+            </li>
+            <li>
+              <Check size={16} /> Clear direction on what comes next
+            </li>
+          </ul>
+          {booking && (
+            <div className="notice">
+              Live scheduling is not connected yet. This page is ready for a
+              booking integration; no time slot is reserved by this form.
+            </div>
+          )}
+          <p className="small">
+            Verified contact details will be displayed here once configured. We
+            do not publish unverified phone numbers or addresses.
+          </p>
+        </aside>
+        <form noValidate onSubmit={submit} className="contact-form">
+          {state === "success" ? (
+            <div className="success-panel" role="status">
+              <CheckCircle2 size={42} />
+              <h2>Thank you.</h2>
+              <p>
+                Your {booking ? "discovery call request" : "message"} has been
+                received.{" "}
+                {booking
+                  ? "Your call is not booked until a time is confirmed."
+                  : "The team will review your enquiry."}
+              </p>
+              <button
+                type="button"
+                className="button"
+                onClick={() => {
+                  setValues({});
+                  setState("default");
+                }}
+              >
+                Send another enquiry
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="form-grid">
+                {[
+                  ["name", "Name", "text", true],
+                  ["email", "Work Email", "email", true],
+                  ["company", "Company", "text"],
+                  ["role", "Role", "text"],
+                ].map(([n, l, t, req]) => (
+                  <label key={n}>
+                    {l}
+                    {req && " *"}
+                    <input
+                      aria-label={l + (req ? " *" : "")}
+                      name={n}
+                      type={t}
+                      autoComplete={
+                        {
+                          name: "name",
+                          email: "email",
+                          company: "organization",
+                          role: "organization-title",
+                        }[n]
+                      }
+                      value={values[n] || ""}
+                      onChange={update}
+                      aria-invalid={!!errors[n]}
+                      aria-describedby={errors[n] ? n + "-error" : undefined}
+                    />
+                    {errors[n] && (
+                      <small id={n + "-error"} className="field-error">
+                        {errors[n]}
+                      </small>
+                    )}
+                  </label>
+                ))}
+                {[
+                  [
+                    "service",
+                    "Service Interest",
+                    ["Not sure yet", ...services.map((s) => s[0])],
+                  ],
+                  [
+                    "stage",
+                    "Project Stage",
+                    [
+                      "Exploring a problem",
+                      "Shaping an idea",
+                      "Ready to build",
+                      "Improving an existing system",
+                    ],
+                  ],
+                  [
+                    "budget",
+                    "Budget Range",
+                    [
+                      "Prefer to discuss",
+                      "Under £10,000",
+                      "£10,000–£25,000",
+                      "£25,000–£50,000",
+                      "£50,000+",
+                    ],
+                  ],
+                ].map(([n, l, opts]) => (
+                  <label key={n}>
+                    {l}
+                    <select name={n} value={values[n] || ""} onChange={update}>
+                      <option value="">Select an option</option>
+                      {opts.map((t) => (
+                        <option key={t}>{t}</option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+                {booking && (
+                  <label>
+                    Preferred availability
+                    <input
+                      type="text"
+                      name="availability"
+                      value={values.availability || ""}
+                      onChange={update}
+                      placeholder="e.g. Tuesday afternoons, UK time"
+                    />
+                  </label>
+                )}
+              </div>
+              <label>
+                Message *
+                <textarea
+                  aria-label="Message *"
+                  name="message"
+                  rows={5}
+                  value={values.message || ""}
+                  onChange={update}
+                  aria-invalid={!!errors.message}
+                  placeholder="What is getting in the way, and what would a better outcome look like?"
+                />
+                {errors.message && (
+                  <small className="field-error">{errors.message}</small>
+                )}
+              </label>
+              <label className="consent">
+                <input
+                  name="consent"
+                  type="checkbox"
+                  checked={!!values.consent}
+                  onChange={update}
+                />
+                <span>
+                  I agree to Horizon using the information provided to respond
+                  to my enquiry. Read the{" "}
+                  <Link to="/privacy">privacy notice</Link>.
+                </span>
+              </label>
+              {errors.consent && (
+                <p className="field-error">{errors.consent}</p>
+              )}
+              {["unavailable", "error"].includes(state) && (
+                <div className="form-error" role="alert">
+                  {state === "unavailable"
+                    ? "Online enquiries are not connected yet. Your message has not been sent. You can download your enquiry below to keep a copy."
+                    : "Your message could not be sent. Please try again. Your entries have been kept."}
+                  {state === "unavailable" && (
+                    <a
+                      download="horizon-enquiry.txt"
+                      href={
+                        "data:text/plain;charset=utf-8," +
+                        encodeURIComponent(
+                          Object.entries(values)
+                            .filter(([k]) => k !== "consent")
+                            .map(([k, v]) => k + ": " + v)
+                            .join("\n"),
+                        )
+                      }
+                    >
+                      Download enquiry ↓
+                    </a>
+                  )}
+                </div>
+              )}
+              <button
+                className="button"
+                disabled={state === "loading"}
+                type="submit"
+              >
+                {state === "loading"
+                  ? "Sending…"
+                  : booking
+                    ? "Request a discovery call"
+                    : "Send enquiry"}
+                <ArrowRight size={16} />
+              </button>
+              <p className="small">
+                Your details are only used to respond to your enquiry.
+              </p>
+            </>
+          )}
+        </form>
+      </section>
+    </>
+  );
+}
+function Legal({ type }) {
+  const texts = {
+    privacy: [
+      [
+        "About this notice",
+        "This notice explains how information entered on this website is handled. The contact form requests your name, work email, business details and project context so Horizon can respond to your enquiry.",
+      ],
+      [
+        "Information you provide",
+        "Only provide information needed to discuss your project. Do not submit passwords, financial credentials or sensitive personal information.",
+      ],
+      [
+        "How information is used",
+        "When a contact integration is enabled, submitted information is used to review and respond to your enquiry. It is not submitted when the site reports that the integration is unavailable.",
+      ],
+      [
+        "Storage and your choices",
+        "You can request information about the handling, correction or deletion of your enquiry through the contact page. Retention arrangements and the applicable controller contact must be confirmed before enabling live collection.",
+      ],
+      [
+        "Third-party services",
+        "No advertising or analytics trackers are enabled in this implementation. Any future booking, analytics or enquiry processor must be documented here before activation.",
+      ],
+    ],
+    terms: [
+      [
+        "Using this website",
+        "This website provides general information about Horizon Consults and its services. It is not a binding offer or professional advice for your specific situation.",
+      ],
+      [
+        "Service agreements",
+        "Any engagement requires a separate written agreement covering scope, fees, responsibilities, intellectual property, confidentiality and applicable terms.",
+      ],
+      [
+        "Content and delivery examples",
+        "Illustrative delivery examples explain potential approaches. They are not representations of verified client work, guaranteed outcomes or performance metrics.",
+      ],
+      [
+        "Availability and external services",
+        "We aim to keep the site useful and accurate. Availability, integrations and content may change. A discovery call is only confirmed when a time is explicitly agreed.",
+      ],
+      [
+        "Enquiries",
+        "Please use the contact page for questions about this website or a potential engagement.",
+      ],
+    ],
+    cookies: [
+      [
+        "A minimal approach",
+        "This website does not currently use advertising cookies, analytics cookies or cross-site tracking.",
+      ],
+      [
+        "Essential browser behaviour",
+        "The website uses ordinary navigation and in-memory interface state for menus, filters and form fields. Contact entries are not persisted in browser storage by this implementation.",
+      ],
+      [
+        "Future integrations",
+        "If booking, analytics or other non-essential technologies are introduced, this notice and any required consent controls must be updated before activation.",
+      ],
+      [
+        "Your browser controls",
+        "You can manage or delete cookies through your browser settings. Blocking essential technologies used by future integrations may affect their functionality.",
+      ],
+    ],
+  };
+  return (
+    <>
+      <PageHero
+        label="LEGAL / HORIZON CONSULTS"
+        title={type[0].toUpperCase() + type.slice(1)}
+        description="Last updated: 27 October 2026"
+      />
+      <section className="section legal-content">
+        <div className="notice">
+          Publication note: the operator’s verified legal identity, contact
+          details and jurisdiction must be confirmed before commercial launch.
+          This notice describes the current website implementation.
+        </div>
+        {texts[type].map(([t, p]) => (
+          <section key={t}>
+            <h2>{t}</h2>
+            <p>{p}</p>
+          </section>
+        ))}
+        <A to="/contact" secondary>
+          Contact Horizon
+        </A>
+      </section>
+    </>
+  );
+}
+function NotFound() {
+  return (
+    <PageHero
+      label="404 / PAGE NOT FOUND"
+      title={
+        <>
+          Let’s get you
+          <br />
+          <em>back on track.</em>
+        </>
+      }
+      description="This page does not exist. Explore our services or start again from the homepage."
+    >
+      <A to="/">Back to Horizon</A>
+    </PageHero>
+  );
+}
+function Breadcrumbs() {
+  const { pathname } = useLocation();
+  if (pathname === "/") return null;
+  const parts = pathname.split("/").filter(Boolean);
+  const names = {
+    services: "Services",
+    "how-we-work": "How We Work",
+    "case-studies": "Case Studies",
+    insights: "Insights",
+    about: "About Horizon",
+    capabilities: "Capabilities",
+    contact: "Contact",
+    "book-a-call": "Book a Call",
+    privacy: "Privacy",
+    terms: "Terms",
+    cookies: "Cookies",
+  };
+  return (
+    <nav className="breadcrumbs wrap" aria-label="Breadcrumb">
+      <Link to="/">Home</Link>
+      {parts.map((part, i) => {
+        const path = "/" + parts.slice(0, i + 1).join("/");
+        const name =
+          names[part] ||
+          services.find((s) => s[1] === part)?.[0] ||
+          cases.find((c) => c[1] === part)?.[0] ||
+          articles.find((a) => a[1] === part)?.[0] ||
+          part;
+        return (
+          <React.Fragment key={path}>
+            <span aria-hidden="true">/</span>
+            {i === parts.length - 1 ? (
+              <span aria-current="page">{name}</span>
+            ) : (
+              <Link to={path}>{name}</Link>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </nav>
+  );
+}
+function App() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      requestAnimationFrame(() =>
+        document
+          .getElementById(decodeURIComponent(location.hash.slice(1)))
+          ?.scrollIntoView({ behavior: "smooth" }),
+      );
+    }
+  }, [location]);
+  return (
+    <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Header />
+      <main id="main">
+        <Breadcrumbs />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/services/:slug" element={<ServicePage />} />
+          <Route path="/how-we-work" element={<HowPage />} />
+          <Route path="/case-studies" element={<CasesPage />} />
+          <Route path="/case-studies/:slug" element={<CaseDetail />} />
+          <Route path="/insights" element={<InsightsPage />} />
+          <Route path="/insights/:slug" element={<Article />} />
+          <Route path="/about" element={<About />} />
+          <Route
+            path="/capabilities"
+            element={
+              <>
+                <PageHero
+                  label="CAPABILITIES"
+                  title={
+                    <>
+                      One team across the decisions that{" "}
+                      <em>make products work.</em>
+                    </>
+                  }
+                  description="Bring design, engineering, quality, delivery and growth capability together around one problem instead of coordinating disconnected suppliers."
+                />
+                <Capabilities />
+                <CTA />
+              </>
+            }
+          />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/book-a-call" element={<Contact booking />} />
+          {["privacy", "terms", "cookies"].map((t) => (
+            <Route key={t} path={"/" + t} element={<Legal type={t} />} />
+          ))}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
+  );
+}
+createRoot(document.getElementById("root")).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+);
