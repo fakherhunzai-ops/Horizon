@@ -29,7 +29,7 @@ This is a complete navigable frontend, **not a fully integrated live lead-genera
 3. Without a configured endpoint, the forms explicitly say the enquiry was **not sent**, preserve entered data, and offer a downloadable copy. They never simulate a successful submission. The success UI is used only after a successful HTTP response.
 4. Add verified UK company/contact details. Confirm the legal entity, jurisdiction, retention and processing arrangements and obtain legal review before publishing the notices or enabling live data collection.
 5. Replace the clearly labelled illustrative delivery examples with approved client case studies. No client identities, metrics, logos, testimonials, staff, awards or registration details are fabricated.
-6. Service-page text follows a shared template; review and tailor the copy to actual agreed offerings. Insight content is original editorial draft copy and should receive publication review.
+6. Service pages use one shared architecture with distinct editorial stories in `src/service-stories.js` and service-specific visuals in `src/ServiceStoryVisual.jsx`. Review the proposed deliverables against actual agreed offerings. Insight content is original editorial draft copy and should receive publication review.
 7. The reference logo is recreated typographically; replace with the official vector logo when available.
 
 ## QA
@@ -39,6 +39,6 @@ npx playwright install --with-deps chromium
 npm test
 ```
 
-Eight tests cover desktop (1440) and mobile (390): homepage controls/FAQ, all 15 menu links and Escape, all 39 content routes with one H1 and no horizontal overflow, and contact validation / unavailable-integration states. All eight passed in this environment using a packaged Chromium binary and its required shared libraries. To use a custom installed Chromium binary, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` and any required `LD_LIBRARY_PATH`.
+Fourteen tests cover desktop (1440) and mobile (390): homepage controls/FAQ, all 15 menu links and Escape, all 39 content routes with one H1 and no horizontal overflow, contact validation / unavailable-integration states, and service-story uniqueness, exact headlines/highlights, breadcrumbs, FAQs and deliberate related-service mappings. The visual-fit checks additionally inspect every service at 1440, 1280, 1024, 768, 430, 390 and 375px, including a maximum of three desktop headline lines. All fourteen passed in this environment using a packaged Chromium binary and its required shared libraries. To use a custom installed Chromium binary, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` and any required `LD_LIBRARY_PATH`.
 
 CSS breakpoints cover 1440+, 1280, 1024, 768 and narrow mobile widths. A full manual cross-browser accessibility and visual comparison is still recommended before launch. Passing automated checks is not a claim of pixel-perfect reference parity.
